@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import AppBarBackIcon from '../../components/BackBtnIcon';
 import { useNavigation } from '@react-navigation/native';
@@ -57,9 +57,7 @@ const Login = () => {
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
                 mode='outlined'
-                // placeholder='Email Username'
                 style={styles.input}
-                // outlineColor='#3797EF'
                 activeOutlineColor='#3797EF'
               />
               {touched.email && errors.email && (
@@ -71,12 +69,11 @@ const Login = () => {
                 value={values.password}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
-                secureTextEntry={visiblePassword ? true : false}
+                secureTextEntry={visiblePassword ? false : true}
                 right={
                   <TextInput.Icon
                     icon={visiblePassword ? 'eye-off-outline' : 'eye-outline'}
                     color='#3797EF'
-                    visible={false}
                     activeOutlineColor='#3797EF'
                     onPress={handleShowPassword}
                   />
@@ -84,13 +81,16 @@ const Login = () => {
                 mode='outlined'
                 placeholder='Password'
                 style={styles.input}
-                // outlineColor='#3797EF'
                 activeOutlineColor='#3797EF'
               />
+              <View style={styles.forgotContainer}>
+                <Text variant='titleMedium' style={styles.forgot}>
+                  Forgot password?
+                </Text>
+              </View>
               {touched.password && errors.password && (
                 <HelperText type='error'>{errors.password}</HelperText>
               )}
-
               <Button
                 mode='contained'
                 loading={loading}
@@ -136,6 +136,17 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
+  },
+  forgotContainer: {
+    width: '100%',
+    alignItems: 'flex-end',
+    paddingVertical: 2,
+    paddingRight: 2,
+    marginBottom: 6,
+  },
+  forgot: {
+    // justifyContent: 'flex-end',
+    color: '#2196F3',
   },
   errorText: {
     color: 'red',
