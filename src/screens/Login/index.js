@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import AppBarBackIcon from '../../components/BackBtnIcon';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
-import { Button, HelperText, MD2Colors, TextInput } from 'react-native-paper';
+import { Button, HelperText, Icon, TextInput } from 'react-native-paper';
 import { loginSchema } from '../../schemas/formikSchemas';
-import Loading from '../../components/custom-loading';
 
 const Login = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [visiblePassword, setVisiblePassword] = useState(false);
+
   const navigateToSignup = () => {
     navigation.navigate('signup');
   };
@@ -28,6 +28,7 @@ const Login = () => {
     <>
       <AppBarBackIcon onPress={navigateToSignup} />
       <View style={styles.container}>
+        <Icon source='instagram' size={40} />
         <Image
           source={require('../../../assets/Instagram Logo.png')}
           style={styles.logo}
@@ -51,7 +52,7 @@ const Login = () => {
           }) => (
             <>
               <TextInput
-                label='Username or Email'
+                label='Username, email or mobile number'
                 name='username'
                 value={values.email || values.username}
                 onChangeText={handleChange('email')}
@@ -59,6 +60,7 @@ const Login = () => {
                 mode='outlined'
                 style={styles.input}
                 activeOutlineColor='#3797EF'
+                outlineColor='#0000001a'
               />
               {touched.email && errors.email && (
                 <HelperText type='error'>{errors.email}</HelperText>
@@ -73,8 +75,6 @@ const Login = () => {
                 right={
                   <TextInput.Icon
                     icon={visiblePassword ? 'eye-off-outline' : 'eye-outline'}
-                    color='#3797EF'
-                    activeOutlineColor='#3797EF'
                     onPress={handleShowPassword}
                   />
                 }
@@ -82,15 +82,17 @@ const Login = () => {
                 placeholder='Password'
                 style={styles.input}
                 activeOutlineColor='#3797EF'
+                outlineColor='#0000001a'
               />
+              {touched.password && errors.password && (
+                <HelperText type='error'>{errors.password}</HelperText>
+              )}
               <View style={styles.forgotContainer}>
                 <Text variant='titleMedium' style={styles.forgot}>
                   Forgot password?
                 </Text>
               </View>
-              {touched.password && errors.password && (
-                <HelperText type='error'>{errors.password}</HelperText>
-              )}
+
               <Button
                 mode='contained'
                 loading={loading}
@@ -100,10 +102,35 @@ const Login = () => {
               >
                 Login
               </Button>
+              <View style={styles.or}>
+                <Text>or</Text>
+              </View>
+              <View style={styles.view}>
+                <Button
+                  mode='outlined'
+                  loading={loading}
+                  style={[styles.button]}
+                  textColor='#fff'
+                  buttonColor='#ee2a7b'
+                  icon='google'
+                >
+                  Login with Google Account
+                </Button>
+              </View>
               <View style={styles.view}>
                 <Text>Don't have an account?</Text>
-                <Text style={styles.link}>Create One</Text>
+                <TouchableOpacity onPress={navigateToSignup}>
+                  <Text style={styles.link}>Create One</Text>
+                </TouchableOpacity>
               </View>
+              <Button
+                mode='outlined'
+                loading={loading}
+                style={[styles.button, styles.newAcc]}
+                textColor='#3797EF'
+              >
+                Create new account
+              </Button>
             </>
           )}
         </Formik>
@@ -117,11 +144,11 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingHorizontal: 20,
     backgroundColor: '#fff',
     alignItems: 'center',
-    // justifyContent: 'center',
-    paddingTop: 80,
+    justifyContent: 'center',
+    // paddingTop: 80,
     // position: 'fixed',
     // bottom: 100,
     left: 0,
@@ -132,10 +159,16 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    marginBottom: 6,
   },
   button: {
     width: '100%',
+  },
+  newAcc: {
+    marginTop: 100,
+  },
+  or: {
+    textDecorationLine: 'line-through',
+    borderBottomWidth: 1,
   },
   forgotContainer: {
     width: '100%',
@@ -145,8 +178,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   forgot: {
-    // justifyContent: 'flex-end',
-    color: '#2196F3',
+    color: '#3797EF',
   },
   errorText: {
     color: 'red',
@@ -156,9 +188,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   link: {
-    color: '#2196F3',
+    color: '#6228d7',
     marginLeft: 10,
     textDecorationLine: 'underline',
   },
-  logo: { marginBottom: 24 },
+  logo: { marginBottom: 10 },
 });

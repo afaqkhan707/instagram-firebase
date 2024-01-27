@@ -5,7 +5,6 @@ const initialState = {
   isLoading: false,
   isError: false,
   isLoggedIn: false,
-  isActive: false,
 };
 
 const authSlice = createSlice({
@@ -15,17 +14,8 @@ const authSlice = createSlice({
     setCurrentUser: (state, action) => {
       state.currentUser = action.payload;
     },
-    setIsLoading: (state, action) => {
-      state.isLoading = action.payload;
-    },
-    setIsError: (state, action) => {
-      state.isError = action.payload;
-    },
     setIsLoggedIn: (state, action) => {
       state.isLoggedIn = action.payload;
-    },
-    setIsActive: (state, action) => {
-      state.isActive = action.payload;
     },
   },
 });
