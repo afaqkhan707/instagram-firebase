@@ -2,7 +2,9 @@
   "expo": {
     "name": "instagram-firebase",
     "slug": "instagram-firebase",
+    "owner": "bsse5482",
     "version": "1.0.0",
+    "plugins": ["@react-native-google-signin/google-signin"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,9 +13,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },

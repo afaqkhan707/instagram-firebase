@@ -1,13 +1,27 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, { useState } from 'react';
 import AppBarBackIcon from '../../components/BackBtnIcon';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import { Button, HelperText, Icon, TextInput } from 'react-native-paper';
 import { loginSchema } from '../../schemas/formikSchemas';
+import CustomTextInput from '../../components/CustomTextInput';
+import { useDispatch } from 'react-redux';
+import {
+  continueWithGoogle,
+  loginUser,
+} from '../../redux/services/firebaseActions';
 
 const Login = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [visiblePassword, setVisiblePassword] = useState(false);
 
@@ -19,13 +33,16 @@ const Login = () => {
   };
 
   const initialValues = {
-    username: '',
     email: '',
     password: '',
   };
 
+  const continueWithGoogleAccount = () => {
+    setLoading(true);
+    dispatch(continueWithGoogle(navigation, setLoading));
+  };
   return (
-    <>
+    <ScrollView>
       <AppBarBackIcon onPress={navigateToSignup} />
       <View style={styles.container}>
         <Icon source='instagram' size={40} />
@@ -37,9 +54,15 @@ const Login = () => {
           initialValues={initialValues}
           validationSchema={loginSchema}
           onSubmit={(values) => {
-            setLoading(true);
-            console.log('values in Login', values);
-            // dispatch(loginUser(values, navigation));
+            try {
+              setLoading(true);
+              console.log('values in Login', values);
+              dispatch(loginUser(values, navigation, setLoading));
+            } catch (error) {
+              console.log(error, 'aftersubmit');
+            } finally {
+              setLoading(false);
+            }
           }}
         >
           {({
@@ -51,44 +74,31 @@ const Login = () => {
             touched,
           }) => (
             <>
-              <TextInput
+              <CustomTextInput
                 label='Username, email or mobile number'
-                name='username'
-                value={values.email || values.username}
+                name='email'
+                value={values.email}
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
-                mode='outlined'
-                style={styles.input}
-                activeOutlineColor='#3797EF'
-                outlineColor='#0000001a'
               />
               {touched.email && errors.email && (
                 <HelperText type='error'>{errors.email}</HelperText>
               )}
-
-              <TextInput
+              <CustomTextInput
                 label='Password'
                 value={values.password}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
-                secureTextEntry={visiblePassword ? false : true}
-                right={
-                  <TextInput.Icon
-                    icon={visiblePassword ? 'eye-off-outline' : 'eye-outline'}
-                    onPress={handleShowPassword}
-                  />
-                }
-                mode='outlined'
-                placeholder='Password'
-                style={styles.input}
-                activeOutlineColor='#3797EF'
-                outlineColor='#0000001a'
+                secureTextEntry={!visiblePassword}
+                rightIcon={visiblePassword ? 'eye-off-outline' : 'eye-outline'}
+                onRightIconPress={handleShowPassword}
               />
+
               {touched.password && errors.password && (
                 <HelperText type='error'>{errors.password}</HelperText>
               )}
               <View style={styles.forgotContainer}>
-                <Text variant='titleMedium' style={styles.forgot}>
+                <Text variant='titleSmall' style={styles.forgot}>
                   Forgot password?
                 </Text>
               </View>
@@ -102,8 +112,10 @@ const Login = () => {
               >
                 Login
               </Button>
-              <View style={styles.or}>
-                <Text>or</Text>
+              <View style={styles.main}>
+                <View style={styles.hr}></View>
+                <Text style={styles.text}>or</Text>
+                <View style={styles.hr}></View>
               </View>
               <View style={styles.view}>
                 <Button
@@ -113,8 +125,9 @@ const Login = () => {
                   textColor='#fff'
                   buttonColor='#ee2a7b'
                   icon='google'
+                  onPress={continueWithGoogleAccount}
                 >
-                  Login with Google Account
+                  Login with Google
                 </Button>
               </View>
               <View style={styles.view}>
@@ -123,19 +136,19 @@ const Login = () => {
                   <Text style={styles.link}>Create One</Text>
                 </TouchableOpacity>
               </View>
-              <Button
+              {/* <Button
                 mode='outlined'
                 loading={loading}
                 style={[styles.button, styles.newAcc]}
                 textColor='#3797EF'
               >
                 Create new account
-              </Button>
+              </Button> */}
             </>
           )}
         </Formik>
       </View>
-    </>
+    </ScrollView>
   );
 };
 
@@ -148,10 +161,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    // paddingTop: 80,
-    // position: 'fixed',
-    // bottom: 100,
-    left: 0,
   },
   heading: {
     fontSize: 30,
@@ -166,9 +175,16 @@ const styles = StyleSheet.create({
   newAcc: {
     marginTop: 100,
   },
-  or: {
-    textDecorationLine: 'line-through',
+  main: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  hr: {
+    flex: 1,
     borderBottomWidth: 1,
+    borderColor: '#0000001a',
+    marginHorizontal: 20,
   },
   forgotContainer: {
     width: '100%',
@@ -179,6 +195,7 @@ const styles = StyleSheet.create({
   },
   forgot: {
     color: '#3797EF',
+    textDecorationLine: 'underline',
   },
   errorText: {
     color: 'red',
@@ -188,7 +205,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   link: {
-    color: '#6228d7',
+    color: '#3797EF',
     marginLeft: 10,
     textDecorationLine: 'underline',
   },

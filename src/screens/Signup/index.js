@@ -8,37 +8,48 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import AppBarBackIcon from '../../components/BackBtnIcon';
-import { useNavigation } from '@react-navigation/native';
+import { Button, HelperText, Icon } from 'react-native-paper';
 import { Formik } from 'formik';
-import { Button, HelperText, Icon, TextInput } from 'react-native-paper';
-import { signupSchema } from '../../schemas/formikSchemas';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
 import {
-  createNewUserWithEmail,
+  continueWithGoogle,
   registerUser,
 } from '../../redux/services/firebaseActions';
-import { useDispatch } from 'react-redux';
+import { signupSchema } from '../../schemas/formikSchemas';
+import CustomTextInput from '../../components/CustomTextInput';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '../../firebase/firebaseConf';
 
 const Signup = () => {
+  const googleProvider = new GoogleAuthProvider();
   const navigation = useNavigation();
   const dispatch = useDispatch();
-
-  const [loading, setLoading] = useState(false);
+  const [loadingLogin, setLoadingLogin] = useState(false);
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [visiblePassword, setVisiblePassword] = useState(false);
-
   const navigateToLogin = () => {
     navigation.navigate('login');
   };
   const handleShowPassword = () => {
     setVisiblePassword(!visiblePassword);
   };
-
+  
+  const continueWithGoogleAccount = async () => {
+    console.log('continueWithGoogleAccount');
+    setLoadingGoogle(true);
+    const resp = await signInWithPopup(auth, googleProvider);
+    const userId = resp.user.uid;
+    const email = resp.user.email;
+    console.log(userId, email, 'login with Google');
+    // dispatch(continueWithGoogle(navigation, setLoadingGoogle));
+  };
   const initialValues = {
     username: '',
     email: '',
     password: '',
     confirm_password: '',
   };
-
   return (
     <ScrollView>
       <AppBarBackIcon onPress={navigateToLogin} />
@@ -52,15 +63,10 @@ const Signup = () => {
           initialValues={initialValues}
           validationSchema={signupSchema}
           onSubmit={(values, action) => {
-            const reset = action.resetForm();
-            // try {
-            setLoading(true);
+            // const reset = action.resetForm();
+            setLoadingLogin(true);
             console.log('values in Signup', values);
-            dispatch(registerUser(values, navigation, setLoading, reset));
-            // } catch (error) {
-            // } finally {
-            //   action.resetForm();
-            // }
+            dispatch(registerUser(values, navigation, setLoadingLogin));
           }}
         >
           {({
@@ -72,82 +78,56 @@ const Signup = () => {
             touched,
           }) => (
             <>
-              <TextInput
+              <CustomTextInput
                 label='Username,'
                 name='username'
                 value={values.username}
                 onChangeText={handleChange('username')}
                 onBlur={handleBlur('username')}
-                mode='outlined'
-                style={styles.input}
-                activeOutlineColor='#3797EF'
-                outlineColor='#0000001a'
               />
               {touched.username && errors.username && (
                 <HelperText type='error'>{errors.username}</HelperText>
               )}
-              <TextInput
+              <CustomTextInput
                 label='Username, email or mobile number'
                 name='email'
                 value={values.email}
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
-                mode='outlined'
-                style={styles.input}
-                activeOutlineColor='#3797EF'
-                outlineColor='#0000001a'
               />
               {touched.email && errors.email && (
                 <HelperText type='error'>{errors.email}</HelperText>
               )}
-
-              <TextInput
+              <CustomTextInput
                 label='Password'
                 value={values.password}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
-                secureTextEntry={visiblePassword ? false : true}
-                right={
-                  <TextInput.Icon
-                    icon={visiblePassword ? 'eye-off-outline' : 'eye-outline'}
-                    // color={visiblePassword ? '#3797EF' : '#ee2a7b'}
-                    onPress={handleShowPassword}
-                  />
-                }
-                mode='outlined'
-                placeholder='Password'
-                style={styles.input}
-                activeOutlineColor='#3797EF'
-                outlineColor='#0000001a'
+                secureTextEntry={!visiblePassword}
+                rightIcon={visiblePassword ? 'eye-off-outline' : 'eye-outline'}
+                onRightIconPress={handleShowPassword}
+                // color={visiblePassword ? '#3797EF' : '#ee2a7b'}
               />
               {touched.password && errors.password && (
                 <HelperText type='error'>{errors.password}</HelperText>
               )}
-              <TextInput
+              <CustomTextInput
                 label='Confirm Password'
                 value={values.confirm_password}
                 onChangeText={handleChange('confirm_password')}
                 onBlur={handleBlur('confirm_password')}
-                secureTextEntry={visiblePassword ? false : true}
-                right={
-                  <TextInput.Icon
-                    icon={visiblePassword ? 'eye-off-outline' : 'eye-outline'}
-                    // color={visiblePassword ? '#3797EF' : '#ee2a7b'}
-                    onPress={handleShowPassword}
-                  />
-                }
-                mode='outlined'
-                placeholder='Repeat Password'
-                style={styles.input}
-                activeOutlineColor='#3797EF'
-                outlineColor='#0000001a'
+                secureTextEntry={!visiblePassword}
+                rightIcon={visiblePassword ? 'eye-off-outline' : 'eye-outline'}
+                onRightIconPress={handleShowPassword}
+                // color={visiblePassword ? '#3797EF' : '#ee2a7b'}
               />
               {touched.confirm_password && errors.confirm_password && (
                 <HelperText type='error'>{errors.confirm_password}</HelperText>
               )}
+
               <Button
                 mode='contained'
-                loading={loading}
+                loading={loadingLogin}
                 onPress={() => handleSubmit(values)}
                 style={styles.button}
                 buttonColor='#3797EF'
@@ -157,19 +137,22 @@ const Signup = () => {
             </>
           )}
         </Formik>
-        <View style={styles.or}>
-          <Text>or</Text>
+        <View style={styles.main}>
+          <View style={styles.hr}></View>
+          <Text style={styles.text}>or</Text>
+          <View style={styles.hr}></View>
         </View>
         <View style={styles.view}>
           <Button
             mode='outlined'
-            loading={loading}
-            style={[styles.button]}
+            loading={loadingGoogle}
+            style={styles.button}
             textColor='#fff'
             buttonColor='#ee2a7b'
             icon='google'
+            onPress={continueWithGoogleAccount}
           >
-            Signup with Google Account
+            Continue Google
           </Button>
         </View>
         <View style={styles.view}>
@@ -178,14 +161,14 @@ const Signup = () => {
             <Text style={styles.link}>Login</Text>
           </TouchableOpacity>
         </View>
-        <Button
+        {/* <Button
           mode='outlined'
           loading={loading}
           style={[styles.button, styles.newAcc]}
           textColor='#3797EF'
         >
           Create new account
-        </Button>
+        </Button> */}
       </View>
     </ScrollView>
   );
@@ -201,6 +184,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   heading: {
     fontSize: 30,
     marginBottom: 10,
@@ -208,6 +192,10 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
   },
+  forgot: {
+    color: '#3797EF',
+  },
+
   button: {
     width: '100%',
     marginTop: 10,
@@ -215,14 +203,18 @@ const styles = StyleSheet.create({
   newAcc: {
     // marginTop: 40,
   },
-  or: {
-    textDecorationLine: 'line-through',
+  main: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  hr: {
+    flex: 1,
     borderBottomWidth: 1,
+    borderColor: '#0000001a',
+    marginHorizontal: 20,
   },
 
-  forgot: {
-    color: '#3797EF',
-  },
   errorText: {
     color: 'red',
   },
@@ -231,7 +223,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   link: {
-    color: '#6228d7',
+    color: '#3797EF',
     marginLeft: 10,
     textDecorationLine: 'underline',
   },
