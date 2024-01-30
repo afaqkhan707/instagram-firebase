@@ -34,7 +34,7 @@ const Signup = () => {
   const handleShowPassword = () => {
     setVisiblePassword(!visiblePassword);
   };
-  
+
   const continueWithGoogleAccount = async () => {
     console.log('continueWithGoogleAccount');
     setLoadingGoogle(true);
@@ -43,12 +43,6 @@ const Signup = () => {
     const email = resp.user.email;
     console.log(userId, email, 'login with Google');
     // dispatch(continueWithGoogle(navigation, setLoadingGoogle));
-  };
-  const initialValues = {
-    username: '',
-    email: '',
-    password: '',
-    confirm_password: '',
   };
   return (
     <ScrollView>
@@ -60,13 +54,22 @@ const Signup = () => {
           style={styles.logo}
         />
         <Formik
-          initialValues={initialValues}
+          initialValues={{
+            username: '',
+            email: '',
+            password: '',
+            confirm_password: '',
+          }}
           validationSchema={signupSchema}
           onSubmit={(values, action) => {
-            // const reset = action.resetForm();
+            const resetSignupForm = () => {
+              return action.resetForm();
+            };
             setLoadingLogin(true);
             console.log('values in Signup', values);
-            dispatch(registerUser(values, navigation, setLoadingLogin));
+            dispatch(
+              registerUser(values, navigation, setLoadingLogin, resetSignupForm)
+            );
           }}
         >
           {({

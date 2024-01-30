@@ -18,11 +18,13 @@ import {
   continueWithGoogle,
   loginUser,
 } from '../../redux/services/firebaseActions';
+import 'expo-dev-client';
 
 const Login = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  const [loadingLogin, setLoadingLogin] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [visiblePassword, setVisiblePassword] = useState(false);
 
   const navigateToSignup = () => {
@@ -32,14 +34,9 @@ const Login = () => {
     setVisiblePassword(!visiblePassword);
   };
 
-  const initialValues = {
-    email: '',
-    password: '',
-  };
-
   const continueWithGoogleAccount = () => {
-    setLoading(true);
-    dispatch(continueWithGoogle(navigation, setLoading));
+    setGoogleLoading(true);
+    dispatch(continueWithGoogle(navigation, setGoogleLoading));
   };
   return (
     <ScrollView>
@@ -51,18 +48,17 @@ const Login = () => {
           style={styles.logo}
         />
         <Formik
-          initialValues={initialValues}
+          initialValues={{ email: '', password: '' }}
           validationSchema={loginSchema}
-          onSubmit={(values) => {
-            try {
-              setLoading(true);
-              console.log('values in Login', values);
-              dispatch(loginUser(values, navigation, setLoading));
-            } catch (error) {
-              console.log(error, 'aftersubmit');
-            } finally {
-              setLoading(false);
-            }
+          onSubmit={(values, action) => {
+            setLoadingLogin(true);
+            const resetFormLogin = () => {
+              return action.resetForm();
+            };
+            console.log('values in Login', values);
+            dispatch(
+              loginUser(values, navigation, setLoadingLogin, resetFormLogin)
+            );
           }}
         >
           {({
@@ -105,7 +101,7 @@ const Login = () => {
 
               <Button
                 mode='contained'
-                loading={loading}
+                loading={loadingLogin}
                 onPress={() => handleSubmit(values)}
                 style={styles.button}
                 buttonColor='#3797EF'
@@ -120,8 +116,8 @@ const Login = () => {
               <View style={styles.view}>
                 <Button
                   mode='outlined'
-                  loading={loading}
-                  style={[styles.button]}
+                  loading={googleLoading}
+                  style={styles.button}
                   textColor='#fff'
                   buttonColor='#ee2a7b'
                   icon='google'

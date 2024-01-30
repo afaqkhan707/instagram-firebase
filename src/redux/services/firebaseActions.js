@@ -9,7 +9,7 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { setCurrentUser } from '../slices/authSlice';
 
 export const registerUser =
-  (values, navigation, setLoading, reset) => async (dispatch) => {
+  (values, navigation, setLoading, resetSignupForm) => async (dispatch) => {
     try {
       const resp = await createUserWithEmailAndPassword(
         auth,
@@ -26,6 +26,7 @@ export const registerUser =
       window.navigator.userAgent = 'ReactNative';
       await setDoc(doc(firestoreDb, 'users', userId), newUserData);
       navigation.navigate('dashboard');
+      resetSignupForm();
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
         console.log('That email address is already in use!');
@@ -39,7 +40,7 @@ export const registerUser =
     }
   };
 export const loginUser =
-  (values, navigation, setLoadingLogin) => async (dispatch) => {
+  (values, navigation, setLoadingLogin, resetFormLogin) => async (dispatch) => {
     try {
       const resp = await signInWithEmailAndPassword(
         auth,
@@ -47,6 +48,7 @@ export const loginUser =
         values.password
       );
       const userId = resp?.user?.uid;
+      window.navigator.userAgent = 'ReactNative';
       const userDoc = await getDoc(doc(firestoreDb, 'users', userId));
       const currentUserData = userDoc.data();
       dispatch(
@@ -57,6 +59,7 @@ export const loginUser =
         })
       );
       navigation.navigate('dashboard');
+      resetFormLogin();
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
         console.log('That email address is already in use!');
@@ -102,6 +105,7 @@ export const continueWithGoogle =
       setLoadingGoogle(false);
     }
   };
+
 // Handle Logout  User
 export const Logout = (navigation) => async (dispatch) => {
   try {
