@@ -34,10 +34,15 @@ const Login = () => {
     setVisiblePassword(!visiblePassword);
   };
 
-  const continueWithGoogleAccount = () => {
-    setGoogleLoading(true);
-    // dispatch(continueWithGoogle(navigation, setGoogleLoading));
-  };
+//   const continueWithGoogleAccount = () => {
+//     setGoogleLoading(true);
+// <<<<<<< HEAD
+//     // dispatch(continueWithGoogle(navigation, setGoogleLoading));
+// =======
+//     dispatch(continueWithGoogle(navigation, setGoogleLoading));
+// >>>>>>> 0462c24b4d974e6d51efbdbb69baf78f07856c09
+//   };
+
   return (
     <ScrollView>
       <AppBarBackIcon onPress={navigateToSignup} />
