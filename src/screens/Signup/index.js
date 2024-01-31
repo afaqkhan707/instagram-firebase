@@ -107,7 +107,7 @@ const Signup = () => {
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 secureTextEntry={!visiblePassword}
-                rightIcon={visiblePassword ? 'eye-off-outline' : 'eye-outline'}
+                rightIcon={visiblePassword ? 'eye-outline' : 'eye-off-outline'}
                 onRightIconPress={handleShowPassword}
                 // color={visiblePassword ? '#3797EF' : '#ee2a7b'}
               />
@@ -120,7 +120,7 @@ const Signup = () => {
                 onChangeText={handleChange('confirm_password')}
                 onBlur={handleBlur('confirm_password')}
                 secureTextEntry={!visiblePassword}
-                rightIcon={visiblePassword ? 'eye-off-outline' : 'eye-outline'}
+                rightIcon={visiblePassword ? 'eye-outline' : 'eye-off-outline'}
                 onRightIconPress={handleShowPassword}
                 // color={visiblePassword ? '#3797EF' : '#ee2a7b'}
               />

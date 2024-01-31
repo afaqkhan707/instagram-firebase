@@ -41,9 +41,9 @@ const Login = () => {
     <ScrollView>
       <AppBarBackIcon onPress={navigateToSignup} />
       <View style={styles.container}>
-        <Icon source='instagram' size={40} />
+        {/* <Icon source='instagram' size={40} /> */}
         <Image
-          source={require('../../../assets/Instagram Logo.png')}
+          source={require('../../../assets/Instagram_icon.png')}
           style={styles.logo}
         />
         <Formik
@@ -85,7 +85,7 @@ const Login = () => {
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 secureTextEntry={!visiblePassword}
-                rightIcon={visiblePassword ? 'eye-off-outline' : 'eye-outline'}
+                rightIcon={visiblePassword ? 'eye-outline' : 'eye-off-outline'}
                 onRightIconPress={handleShowPassword}
               />
 
@@ -204,5 +204,5 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     textDecorationLine: 'underline',
   },
-  logo: { marginBottom: 10 },
+  logo: { marginBottom: 60, width: 60, height: 60, marginTop: 20 },
 });

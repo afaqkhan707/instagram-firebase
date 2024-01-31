@@ -1,9 +1,8 @@
-// import { StyleSheet, Text, View } from 'react-native';
-// import React from 'react';
-// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Home from '../Home';
 import * as React from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
+import SerachTab from '../Search';
+import HomeTab from '../Home';
+import AddTab from '../Add';
 const Dashboard = () => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -28,46 +27,28 @@ const Dashboard = () => {
       focusedIcon: 'account-circle-outline',
     },
   ]);
-  const MusicRoute = () => <Text>Music</Text>;
-
-  const AlbumsRoute = () => <Text>Albums</Text>;
-
-  const RecentsRoute = () => <Text>Recents</Text>;
-
+  const HomeRoute = () => <HomeTab />;
+  const SearchRoute = () => <SerachTab />;
+  const AddRoute = () => <AddTab />;
   const NotificationsRoute = () => <Text>Notifications</Text>;
   const Heart = () => <Text>Notifications</Text>;
 
   const renderScene = BottomNavigation.SceneMap({
-    home: MusicRoute,
-    plus: AlbumsRoute,
-    search: RecentsRoute,
+    home: HomeRoute,
+    search: SearchRoute,
+    plus: AddRoute,
     heart: NotificationsRoute,
     account: Heart,
   });
 
-  // const Tab = createBottomTabNavigator();
-  // return (
-  // <View>
-  {
-    /* <Tab.Navigator> */
-  }
   return (
     <BottomNavigation
       navigationState={{ index, routes }}
       onIndexChange={setIndex}
       renderScene={renderScene}
+      labeled={false}
     />
   );
-  {
-    /* <Tab.Screen name='Home' component={Home} /> */
-  }
-  {
-    /* </Tab.Navigator> */
-  }
-  {
-    /* </View> */
-  }
-  // );
 };
 
 export default Dashboard;

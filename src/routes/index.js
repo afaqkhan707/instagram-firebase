@@ -18,13 +18,13 @@ const MyStack = () => {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name='dashboard'
-            component={Dashboard}
+            name='signup'
+            component={Signup}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name='signup'
-            component={Signup}
+            name='dashboard'
+            component={Dashboard}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

@@ -1,15 +1,15 @@
-import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
 
-const HomeTab = () => {
+const AddTab = () => {
   return (
     <View style={styles.container}>
-      <Text>Home</Text>
+      <Text>AddTab</Text>
     </View>
   );
 };
 
-export default HomeTab;
+export default AddTab;
 
 const styles = StyleSheet.create({
   container: {
