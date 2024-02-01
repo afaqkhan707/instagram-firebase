@@ -46,7 +46,13 @@ const Dashboard = () => {
       navigationState={{ index, routes }}
       onIndexChange={setIndex}
       renderScene={renderScene}
-      labeled={false}
+      labeled={true}
+      activeColor='#ee2a7b'
+      barStyle={{
+        backgroundColor: '#fff',
+        height: 40,
+        justifyContent: 'center',
+      }}
     />
   );
 };

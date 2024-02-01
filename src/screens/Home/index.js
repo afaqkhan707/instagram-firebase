@@ -1,11 +1,19 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import HomeAppBar from '../../components/HomeAppBar';
+import { Icon, IconButton } from 'react-native-paper';
+import SvgLogos from '../../components/Svgs';
+import StatusBar from './StatusBar';
 
 const HomeTab = () => {
   return (
-    <View style={styles.container}>
-      <Text>Home</Text>
-    </View>
+    <>
+      <HomeAppBar />
+      <StatusBar/>
+      <View style={styles.container}>
+        <Text>Home</Text>
+      </View>
+    </>
   );
 };
 
@@ -16,6 +24,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'orange',
+    backgroundColor: '#fff',
   },
 });
