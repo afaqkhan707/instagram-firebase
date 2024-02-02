@@ -8,7 +8,7 @@ const HomeTab = () => {
   return (
     <>
       <HomeAppBar />
-      <ScrollView showsVerticalScrollIndicator={true}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <StatusBar />
         <Post />
         <Post />

@@ -50,7 +50,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     marginTop: 10,
-    marginBottom: 10,
+    // marginBottom: 10,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#0000001a',
+    flex: 1,
   },
   contentContainer: {
     justifyContent: 'center',

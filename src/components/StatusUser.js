@@ -2,16 +2,16 @@ import * as React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Avatar, Text } from 'react-native-paper';
 
-const StatusUser = ({ imageURl, name }) => (
+const StatusUser = ({ imageURl, name, size, url }) => (
   <View
     style={{
       alignItems: 'center',
     }}
   >
     <TouchableOpacity style={styles.imagesContainer}>
-      <Avatar.Image size={64} source={{ uri: imageURl }} />
+      <Avatar.Image size={size} source={{ uri: imageURl }} />
     </TouchableOpacity>
-    <Text style={{ color: '#262626' }}>{name}_sd</Text>
+    <Text style={{ color: '#262626' }}>{name}</Text>
   </View>
 );
 export default StatusUser;
