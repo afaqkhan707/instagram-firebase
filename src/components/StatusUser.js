@@ -1,14 +1,18 @@
 import * as React from 'react';
-import { Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Avatar, Text } from 'react-native-paper';
 
 const StatusUser = ({ imageURl, name }) => (
-  <>
+  <View
+    style={{
+      alignItems: 'center',
+    }}
+  >
     <TouchableOpacity style={styles.imagesContainer}>
-      <Avatar.Image size={80} source={{ uri: imageURl }} />
-      {/* <Text style={{ color: 'black', backgroundColor: 'blue' }}>{name}</Text> */}
+      <Avatar.Image size={64} source={{ uri: imageURl }} />
     </TouchableOpacity>
-  </>
+    <Text style={{ color: '#262626' }}>{name}_sd</Text>
+  </View>
 );
 export default StatusUser;
 const styles = StyleSheet.create({

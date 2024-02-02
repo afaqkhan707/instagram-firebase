@@ -1,18 +1,19 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import HomeAppBar from '../../components/HomeAppBar';
-import { Icon, IconButton } from 'react-native-paper';
-import SvgLogos from '../../components/Svgs';
 import StatusBar from './StatusBar';
+import Post from './Post';
 
 const HomeTab = () => {
   return (
     <>
       <HomeAppBar />
-      <StatusBar/>
-      <View style={styles.container}>
-        <Text>Home</Text>
-      </View>
+      <ScrollView showsVerticalScrollIndicator={true}>
+        <StatusBar />
+        <Post />
+        <Post />
+        <Post />
+      </ScrollView>
     </>
   );
 };

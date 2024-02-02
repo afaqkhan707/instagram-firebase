@@ -16,17 +16,19 @@ const HomeAppBar = () => {
       <View
         style={{
           flex: 1,
-          width: 105,
-          height: 28,
+          // width: 105,
+          // height: 28,
           alignItems: 'center',
         }}
       >
         <Image
           source={require('../../assets/Instagram Logo.png')}
-          style={{
-            width: 105,
-            height: 28,
-          }}
+          style={
+            {
+              width: 105,
+              height: 28,
+            }
+          }
         />
       </View>
       <Appbar.Action icon={IgnSvg} onPress={_handleSearch} />

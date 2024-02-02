@@ -15,20 +15,29 @@ const StatusBar = () => {
     images.push({
       id: i + 1,
       imageURl: images[0].imageURl,
-      name: 'dummy string',
+      name: 'aamir',
     });
   }
   return (
-    <ScrollView
-      horizontal
-      style={styles.scrollView}
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.contentContainer}
-    >
-      {images.map((image) => (
-        <StatusUser key={image.id} imageURl={image.imageURl} />
-      ))}
-    </ScrollView>
+    <>
+      <ScrollView
+        horizontal
+        style={styles.scrollView}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.contentContainer}
+      >
+        {images.map((image) => (
+          <StatusUser
+            key={image.id}
+            imageURl={image.imageURl}
+            name={image.name}
+          />
+        ))}
+        <View
+          style={{ borderBottomWidth: 1, borderColor: '#0000001a', flex: 1 }}
+        ></View>
+      </ScrollView>
+    </>
   );
 };
 
@@ -36,14 +45,12 @@ export default StatusBar;
 
 const styles = StyleSheet.create({
   scrollView: {
-    // flex: 1,
-    maxHeight: 110,
+    minHeight: 100,
     flexDirection: 'row',
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingVertical: 4,
     marginTop: 10,
     marginBottom: 10,
-    elevation: 1,
   },
   contentContainer: {
     justifyContent: 'center',
