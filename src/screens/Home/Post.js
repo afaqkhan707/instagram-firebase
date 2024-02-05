@@ -1,14 +1,16 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import PostHeader from './PostHeader';
 import { IconButton } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
 const Post = () => {
   const [isPostLiked, setIsPostLiked] = React.useState(false);
   const [isCommented, setIsCommented] = React.useState(false);
   const [isPostSaved, setIsPostSaved] = React.useState(false);
   const [isPostShared, setIsPostShared] = React.useState(false);
+  const postContent = useSelector((state) => state.post?.content);
   const handleLike = () => {
     setIsPostLiked(!isPostLiked);
   };
@@ -26,9 +28,13 @@ const Post = () => {
   return (
     <View style={styles.postContainer}>
       <PostHeader />
-      <View style={styles.postImageContainer}>
+      {postContent && (
+        <Image source={{ uri: postContent }} style={styles.postImage} />
+      )}
+
+      {/* <View style={styles.postImageContainer}>
         <Image source={{ uri: url }} style={styles.postImage} />
-      </View>
+      </View> */}
 
       {/* Post Footer Image Post */}
       <View style={styles.postFooter}>

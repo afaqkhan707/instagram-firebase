@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Svg, { Path } from 'react-native-svg';
-const SvgLogos = (d) => (
+const SvgLogos = () => (
   <Svg
     width={24}
     height={22}

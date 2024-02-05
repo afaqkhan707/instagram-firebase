@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BottomNavigation, Text } from 'react-native-paper';
+import { BottomNavigation, Text, StatusBar } from 'react-native-paper';
 import SerachTab from '../Search';
 import HomeTab from '../Home';
 import AddTab from '../Add';
@@ -42,18 +42,20 @@ const Dashboard = () => {
   });
 
   return (
-    <BottomNavigation
-      navigationState={{ index, routes }}
-      onIndexChange={setIndex}
-      renderScene={renderScene}
-      labeled={true}
-      activeColor='#ee2a7b'
-      barStyle={{
-        backgroundColor: '#fff',
-        height: 40,
-        justifyContent: 'center',
-      }}
-    />
+    <>
+      <BottomNavigation
+        navigationState={{ index, routes }}
+        onIndexChange={setIndex}
+        renderScene={renderScene}
+        labeled={true}
+        activeColor='#ee2a7b'
+        barStyle={{
+          backgroundColor: '#fff',
+          height: 40,
+          justifyContent: 'center',
+        }}
+      />
+    </>
   );
 };
 

@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import StatusUser from '../../components/StatusUser';
 
-const StatusBar = () => {
+export const StatusBarUsers = () => {
   const images = [
     {
       id: 1,
@@ -19,29 +19,27 @@ const StatusBar = () => {
     });
   }
   return (
-    <>
-      <ScrollView
-        horizontal
-        style={styles.scrollView}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainer}
-      >
-        {images.map((image) => (
-          <StatusUser
-            key={image.id}
-            imageURl={image.imageURl}
-            name={image.name}
-          />
-        ))}
-        <View
-          style={{ borderBottomWidth: 1, borderColor: '#0000001a', flex: 1 }}
-        ></View>
-      </ScrollView>
-    </>
+    <ScrollView
+      horizontal
+      style={styles.scrollView}
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.contentContainer}
+    >
+      {images.map((image) => (
+        <StatusUser
+          key={image.id}
+          imageURl={image.imageURl}
+          name={image.name}
+        />
+      ))}
+      <View
+        style={{ borderBottomWidth: 1, borderColor: '#0000001a', flex: 1 }}
+      ></View>
+    </ScrollView>
   );
 };
 
-export default StatusBar;
+export default StatusBarUsers;
 
 const styles = StyleSheet.create({
   scrollView: {
