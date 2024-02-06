@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   // posts: [
-  content: '',
+  content: [],
   // {
   //   content: [],
   //   //   likes: 0,
@@ -21,7 +21,7 @@ const postSlice = createSlice({
   initialState,
   reducers: {
     addedNewPost: (state, action) => {
-      state.content = action.payload;
+      state.content.push(action.payload);
     },
   },
 });

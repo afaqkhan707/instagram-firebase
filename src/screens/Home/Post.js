@@ -28,13 +28,19 @@ const Post = () => {
   return (
     <View style={styles.postContainer}>
       <PostHeader />
-      {postContent && (
-        <Image source={{ uri: postContent }} style={styles.postImage} />
-      )}
+      {/* 
+      {postContent[0] && (
+        <Image source={{ uri: postContent[0] }} style={styles.postImage} />
+      )} */}
 
-      {/* <View style={styles.postImageContainer}>
-        <Image source={{ uri: url }} style={styles.postImage} />
-      </View> */}
+      <View style={styles.postImageContainer}>
+        <Image
+          source={{
+            uri: 'https://images.unsplash.com/photo-1624812449802-99c34cb56654?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+          }}
+          style={styles.postImage}
+        />
+      </View>
 
       {/* Post Footer Image Post */}
       <View style={styles.postFooter}>
