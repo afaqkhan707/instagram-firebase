@@ -4,8 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../screens/Login';
 import Dashboard from '../screens/Dashboard';
 import Signup from '../screens/Signup';
-// import ImagePickerExample from '../screens/Camera';
-import ImagePickerExample from '../screens/Camera';
+import CameraModalScreen from '../screens/Camera';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,7 +30,7 @@ const MyStack = () => {
           />
           <Stack.Screen
             name='camera'
-            component={ImagePickerExample}
+            component={CameraModalScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

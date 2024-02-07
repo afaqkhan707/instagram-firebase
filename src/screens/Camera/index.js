@@ -1,111 +1,154 @@
-// import { Camera, CameraType } from 'expo-camera';
-// import { useState } from 'react';
-// import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-// import { MaterialIcons } from '@expo/vector-icons';
-// import AppBarBackIcon from '../../components/BackBtnIcon';
-// import { useNavigation } from '@react-navigation/native';
-
-// export default function CameraOpen() {
-//   const [type, setType] = useState(CameraType.back);
-//   const [permission, requestPermission] = Camera.useCameraPermissions();
-//   const navigation = useNavigation();
-//   if (!permission) {
-//     return <View />;
-//   }
-
-//   if (!permission.granted) {
-//     return (
-//       <View style={styles.container}>
-//         <Text style={{ textAlign: 'center' }}>
-//           We need your permission to show the camera
-//         </Text>
-//         <Button onPress={requestPermission} title='grant permission' />
-//       </View>
-//     );
-//   }
-
-//   function toggleCameraType() {
-//     setType((current) =>
-//       current === CameraType.back ? CameraType.front : CameraType.back
-//     );
-//   }
-
-//   return (
-//     <>
-//       <AppBarBackIcon onPress={() => navigation.goBack()} />
-//       <View style={styles.container}>
-//         <Camera style={styles.camera} type={type} >
-//           <View style={styles.buttonContainer}>
-//             <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
-//               <Text style={styles.text}>
-//                 <MaterialIcons
-//                   name='flip-camera-android'
-//                   size={24}
-//                   color='black'
-//                 />
-//               </Text>
-//             </TouchableOpacity>
-//           </View>
-//         </Camera>
-//       </View>
-//     </>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//   },
-//   camera: {
-//     // flex: 1,
-//     height: '60%',
-//   },
-//   buttonContainer: {
-//     flex: 1,
-//     flexDirection: 'row',
-//     backgroundColor: 'transparent',
-//     margin: 64,
-//   },
-//   button: {
-//     flex: 1,
-//     alignSelf: 'flex-end',
-//     alignItems: 'center',
-//   },
-//   text: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     color: 'white',
-//   },
-// });
+import { nanoid } from '@reduxjs/toolkit';
 import React, { useState } from 'react';
-import { Button, Image, View } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import {
+  Alert,
+  Modal,
+  StyleSheet,
+ 
+  View,
+  Image,
+  FlatList,
+  ScrollView,
+} from 'react-native';
+import { Button } from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 
-export default function ImagePickerExample() {
-  const [image, setImage] = useState(null);
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
+const CameraModal = (props) => {
+  const [modalVisible, setModalVisible] = useState(true);
+  const [description, setDescription] = React.useState('');
+  const [location, setLocation] = React.useState('');
+ 
+  const sendPost = () => {
+    console.log('Post Send TO Firebase');
+    setModalVisible(!modalVisible);
   };
-
+  const openCamera = () => {
+    // setModalVisible(!modalVisible);
+  };
+  const [image, setImage] = React.useState([
+    {
+      id: nanoid(),
+      url: 'https://images.unsplash.com/photo-1647202324921-0177441f6aaa?q=80&w=1390&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    },
+    
+  ]);
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button title='Pick an image from camera roll' onPress={pickImage} />
-      {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-      )}
+    <View style={styles.centeredView}>
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalViewTop}>
+          <FlatList
+            data={props.content}
+            contentContainerStyle={{
+              flexDirection: 'column',
+              rowGap: 10,
+            }}
+            columnWrapperStyle={{
+              justifyContent: 'space-between',
+            }}
+            renderItem={({ item }) => (
+              <Image
+                source={{ uri: item.uri }}
+                style={styles.imagesContainer}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+            numColumns={3}
+          />
+        </View>
+        <View
+          style={{
+            alignItems: 'flex-end',
+            // justifyContent: 'center',
+            backgroundColor: '#fff',
+            paddingVertical: 8,
+            paddingHorizontal: 14,
+          }}
+        >
+          <Button icon='plus' mode='elevated' onPress={openCamera}>
+            add Photos
+          </Button>
+        </View>
+
+        <View style={styles.modalViewBottom}>
+          <TextInput
+            label='description'
+            value={description}
+            onChangeText={(value) => setDescription(value)}
+            mode='outlined'
+            placeholder='add Some description'
+            width={333}
+            outlineStyle={{
+              borderWidth: 0,
+              borderWidth: 0.5,
+              borderColor: '#0000001a',
+            }}
+            activeOutlineColor='#333'
+          />
+          <TextInput
+            label='Location'
+            value={location}
+            onChangeText={(value) => setLocation(value)}
+            placeholder='optional'
+            mode='outlined'
+            width={150}
+            style={{ position: 'absolute', top: 80, left: 20 }}
+            outlineStyle={{
+              borderWidth: 0.5,
+              borderColor: '#0000001a',
+            }}
+            activeOutlineColor='#333'
+          />
+          <Button
+            icon='send'
+            onPress={sendPost}
+            mode='elevated'
+            style={styles.postButton}
+          >
+            Send Post
+          </Button>
+        </View>
+      </Modal>
     </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  modalViewTop: {
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    flex: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    maxHeight: 400,
+  },
+  imagesContainer: {
+    width: 100,
+    height: 120,
+  },
+
+  modalViewBottom: {
+    width: '100%',
+    minHeight: 284,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    backgroundColor: '#fff',
+    alignItems: 'flex-end',
+    elevation: 1,
+    padding: 10,
+  },
+  postButton: {
+    position: 'absolute',
+    right: 10,
+    bottom: 10,
+  },
+});
+
+export default CameraModal;

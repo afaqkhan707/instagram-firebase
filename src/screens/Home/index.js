@@ -7,24 +7,24 @@ import { useSelector } from 'react-redux';
 import CameraModal from '../../components/CameraModal';
 
 const HomeTab = () => {
-  const [postContent, setPostContent] = React.useState();
+  const [postContent, setPostContent] = React.useState([]);
+  const [modalVisible, setModalVisible] =React.useState(true);
 
-  const setContent = (res) => {
-    // console.log(res, 'sssssssssssssssssssssss');
-    setPostContent(res);
+  const setContent = (content) => {
+    setPostContent([...postContent, content]);
   };
   if (postContent) console.log(postContent, 'post content');
   return (
     <>
-      <CameraModal content={postContent} />
+      <CameraModal content={postContent}  setContentData={setContent}  modalVisible={modalVisible} setModalVisible={setModalVisible}/>
       <ScrollView
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[0]}
         // StickyHeaderComponent={HomeAppBar}
       >
-        <HomeAppBar setContent={setContent} />
-        <StatusBarUsers />
-        <Post />
+        <HomeAppBar setContentData={setContent} setModalVisible={setModalVisible}/>
+        {/* <StatusBarUsers /> */}
+        {/* <Post /> */}
       </ScrollView>
     </>
   );

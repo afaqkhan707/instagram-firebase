@@ -1,49 +1,24 @@
     import * as React from 'react';
-    import { Appbar, TextInput } from 'react-native-paper';
+    import * as ImagePicker from 'expo-image-picker';
+    import { Appbar,  } from 'react-native-paper';
     import { Image, StyleSheet, View } from 'react-native';
     import SvgLogos from './Svgs';
-    import MsgSvg from './Svgs/MsgSvg';
     import IgnSvg from './Svgs/IgnSvg';
-    import InstaSvg from './Svgs/LogoInsta';
     import { Feather } from '@expo/vector-icons';
     import { useNavigation } from '@react-navigation/native';
-    import * as ImagePicker from 'expo-image-picker';
     import { useDispatch } from 'react-redux';
-    // import { uploadContent } from '../redux/services/firebaseActions';
     import { addedNewPost } from '../redux/slices/postSlice';
     import CameraModal from './CameraModal';
     import { launchCamera } from '../utils/launchCamera';
-    const HomeAppBar = ({ setContent }) => {
-      // const navigation = useNavigation();
-      // const openCamera = () => navigation.navigate('camera');
 
-      const dispatch = useDispatch();
-      const _handleSearch = () => console.log('Went Backss');
-      const _handleMore = () => console.log('Shown more');
-      const [postContent, setImage] = React.useState([]);
-
-      // const cameraImage = async () => {
-      //   const cameraPermission = await ImagePicker.getCameraPermissionsAsync();
-      //   if (cameraPermission.granted) {
-      //     const result = await ImagePicker.launchCameraAsync({
-      //       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      //       allowsEditing: false,
-      //     });
-      //     // console.log(result);
-      //     if (result.canceled) {
-      //       return;
-      //     }
-      //     return props.setContent.push(result.assets[0]);
-      //   }
-      // };
+    const HomeAppBar = ({ setContentData,setModalVisible }) => {
+const naviagtion = useNavigation();
 
       const cameraLaunched = async () => {
+        setModalVisible(true)
         const respContent = await launchCamera();
-        console.log(respContent, 'camera launched');
-        setContent(respContent);
-        // () => setContent.push(respContent);
+      setContentData(respContent);
       };
-      // if (postContent) dispatch(addedNewPost(postContent));
 
       const pickImageLibrary = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -87,7 +62,6 @@
           <Appbar.Action icon={IgnSvg} />
           <Appbar.Action
             icon={() => <Feather name='send' size={24} color='black' />}
-            onPress={_handleMore}
           />
         </Appbar.Header>
       );

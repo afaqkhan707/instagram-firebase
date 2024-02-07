@@ -1,7 +1,5 @@
 import * as ImagePicker from 'expo-image-picker';
 export const launchCamera = async () => {
-  //   const cameraPermission = await ImagePicker.getCameraPermissionsAsync();
-  //   if (cameraPermission.granted) {
   let result = await ImagePicker.launchCameraAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: false,
@@ -12,5 +10,3 @@ export const launchCamera = async () => {
   }
   return result.assets[0];
 };
-// };
-//export default launchCamera;
