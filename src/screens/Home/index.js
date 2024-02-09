@@ -4,8 +4,9 @@ import HomeAppBar from '../../components/HomeAppBar';
 import StatusBarUsers from './StatusBar';
 import Post from './Post';
 import CameraModal from '../../components/CameraModal';
+import StatusUser from '../../components/StatusUser';
 const HomeTab = () => {
-  const [modalVisible, setModalVisible] = React.useState(true);
+  const [modalVisible, setModalVisible] = React.useState(false);
   const [postContent, setPostContent] = React.useState([]);
 
   const setContent = (content) => {
@@ -17,7 +18,6 @@ const HomeTab = () => {
       <CameraModal
         setContentData={setContent}
         postContent={postContent}
-        setPostContent={setPostContent}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />
@@ -30,6 +30,7 @@ const HomeTab = () => {
           setContentData={setContent}
           setModalVisible={setModalVisible}
         />
+
         <StatusBarUsers />
         <Post />
       </ScrollView>

@@ -1,6 +1,12 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import StatusUser from '../../components/StatusUser';
+import { useSelector } from 'react-redux';
+import { launchLibrary } from '../../utils/launchLibrary';
+import { doc, setDoc } from 'firebase/firestore';
+import { firestoreDb, storage } from '../../firebase/firebaseConf';
+import { nanoid } from '@reduxjs/toolkit';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 export const StatusBarUsers = () => {
   const images = [
@@ -8,16 +14,48 @@ export const StatusBarUsers = () => {
       id: 1,
       imageURl:
         'https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      name: 'aamir',
+      userName: 'aamir',
     },
   ];
+
   for (let i = 1; i < 20; i++) {
     images.push({
       id: i + 1,
       imageURl: images[0].imageURl,
-      name: 'aamir',
+      userName: 'aamir',
     });
   }
+  const userId = useSelector(
+    (state) => state.auth.currentUser?.currentActiveUser.userId
+  );
+  const [userImage, setUserImage] = useState(null);
+  const uploadUserProfilePhoto = async (uri) => {
+    try {
+      if (userImage) {
+        const resp = await fetch(uri);
+        const blobType = await resp.blob();
+        const storageRef = ref(storage, `userProfileImages/${nanoid()}`);
+
+        await uploadBytes(storageRef, blobType);
+
+        const downloadURL = await getDownloadURL(storageRef);
+        const userDocRef = doc(firestoreDb, 'users', userId);
+        await setDoc(userDocRef, { proImgLink: downloadURL }, { merge: true });
+      }
+    } catch (error) {
+      console.error('Error uploading user profile photo:', error);
+      throw error;
+    }
+  };
+
+  const profileImage = async () => {
+    response = await launchLibrary();
+    await setUserImage(response);
+    uploadUserProfilePhoto(response.uri);
+  };
+  const activeUser = useSelector(
+    (state) => state.auth.currentUser.currentActiveUser
+  );
   return (
     <ScrollView
       horizontal
@@ -25,11 +63,17 @@ export const StatusBarUsers = () => {
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.contentContainer}
     >
+      <StatusUser
+        userImage={activeUser?.proImgLink}
+        userName={activeUser?.username}
+        size={70}
+        onPress={profileImage}
+      />
       {images.map((image) => (
         <StatusUser
           key={image.id}
-          imageURl={image.imageURl}
-          name={image.name}
+          userImage={image.userImage}
+          userName={image.userName}
         />
       ))}
       <View

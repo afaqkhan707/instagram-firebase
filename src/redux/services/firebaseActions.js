@@ -57,6 +57,7 @@ export const loginUser =
       window.navigator.userAgent = 'ReactNative';
       const userDoc = await getDoc(doc(firestoreDb, 'users', userId));
       const currentUserData = userDoc.data();
+      console.log(currentUserData);
       dispatch(
         setCurrentUser({
           currentActiveUser: currentUserData,
