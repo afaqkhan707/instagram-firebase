@@ -4,7 +4,6 @@ import {
   Alert,
   Modal,
   StyleSheet,
- 
   View,
   Image,
   FlatList,
@@ -17,7 +16,7 @@ const CameraModal = (props) => {
   const [modalVisible, setModalVisible] = useState(true);
   const [description, setDescription] = React.useState('');
   const [location, setLocation] = React.useState('');
- 
+
   const sendPost = () => {
     console.log('Post Send TO Firebase');
     setModalVisible(!modalVisible);
@@ -30,7 +29,6 @@ const CameraModal = (props) => {
       id: nanoid(),
       url: 'https://images.unsplash.com/photo-1647202324921-0177441f6aaa?q=80&w=1390&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     },
-    
   ]);
   return (
     <View style={styles.centeredView}>

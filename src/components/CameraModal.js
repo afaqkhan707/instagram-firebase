@@ -13,83 +13,98 @@ import { Button, IconButton } from 'react-native-paper';
 import { TextInput } from 'react-native-paper';
 import { launchCamera } from '../utils/launchCamera';
 import AppBarBackIcon from './BackBtnIcon';
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from 'firebase/storage';
+import { storage } from '../firebase/firebaseConf';
+import { useSelector } from 'react-redux';
 
-const CameraModal = (props) => {
+const CameraModal = ({
+  postContent,
+  setPostContent,
+  modalVisible,
+  setModalVisible,
+  setContentData,
+}) => {
+  const userId = useSelector((state) => state.auth.user);
   const [description, setDescription] = React.useState('');
   const [location, setLocation] = React.useState('');
-  const sendPost = () => {
-    console.log('Post Send to Firebase');
-    props.setModalVisible(!props.modalVisible);
+  const [sendLoading, setSendLoading] = React.useState(false);
+
+  const sendPost = async () => {
+    setSendLoading(true);
+    try {
+      const uploadTasks = [];
+      for (const imageUrl of postContent) {
+        const response = await uploadImage(imageUrl.uri);
+        uploadTasks.push(response);
+      }
+      await Promise.all(uploadTasks);
+      // console.log(uploadTasks, 'responses uploaded images');
+      const data = {
+        postImage: uploadTasks,
+        comments: [],
+        likes: 0,
+        userId: '',
+        address: '',
+        description: '',
+      };
+      console.log(data, 'data');
+    } catch (error) {
+      console.error('Error uploading images or getting download URLs:', error);
+    }
+  };
+  const uploadImage = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const storageRef = ref(storage, 'post_media_files/');
+      const filename = `${Date.now()}-${nanoid()}`;
+      const imageRef = ref(storageRef, filename);
+      await uploadBytes(imageRef, blob);
+      const downloadURL = await getDownloadURL(imageRef);
+      return downloadURL;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
   };
   const openCamera = async () => {
     const respContent = await launchCamera();
-    await props.setContentData(respContent);
+    await setContentData(respContent);
   };
-  const oo = [
-    {
-      id: 1,
-      url: 'https://images.unsplash.com/photo-1707090804669-72f8a7f3348e?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      id: nanoid(),
-      url: 'https://images.unsplash.com/photo-1707090804669-72f8a7f3348e?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      id: nanoid(),
-      url: 'https://images.unsplash.com/photo-1707090804669-72f8a7f3348e?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      id: nanoid(),
-      url: 'https://images.unsplash.com/photo-1707090804669-72f8a7f3348e?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      id: nanoid(),
-      url: 'https://images.unsplash.com/photo-1707090804669-72f8a7f3348e?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      id: nanoid(),
-      url: 'https://images.unsplash.com/photo-1707090804669-72f8a7f3348e?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      id: nanoid(),
-      url: 'https://images.unsplash.com/photo-1707090804669-72f8a7f3348e?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      id: nanoid(),
-      url: 'https://images.unsplash.com/photo-1707090804669-72f8a7f3348e?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      id: nanoid(),
-      url: 'https://images.unsplash.com/photo-1707090804669-72f8a7f3348e?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-  ];
+
   return (
     <View style={styles.centeredView}>
       <Modal
         animationType='slide'
         transparent={true}
-        visible={props.modalVisible}
+        visible={modalVisible}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
-          props.setModalVisible(!props.modalVisible);
+          setModalVisible(!modalVisible);
         }}
       >
-        <AppBarBackIcon
-          onPress={() => props.setModalVisible(!props.modalVisible)}
-        />
+        <AppBarBackIcon onPress={() => setModalVisible(!modalVisible)} />
 
-        <ScrollView style={styles.modalView}>
+        <ScrollView
+          style={{
+            flex: 1,
+            maxHeight: 350,
+          }}
+        >
           <View style={styles.modalTopView}>
-            {
-              // props.content &&
-              oo.map((item) => (
+            {postContent &&
+              postContent.map((item, index) => (
                 <Image
                   source={{ uri: item.uri }}
-                  key={item.id}
+                  key={index}
                   style={styles.imagesContainer}
                 />
-              ))
-            }
+              ))}
             <View>
               <IconButton
                 icon='plus'
@@ -130,6 +145,7 @@ const CameraModal = (props) => {
             activeOutlineColor='#333'
           />
           <Button
+            loading={sendLoading}
             icon='send'
             onPress={sendPost}
             mode='elevated'
@@ -144,16 +160,12 @@ const CameraModal = (props) => {
 };
 
 const styles = StyleSheet.create({
-  modalView: {
-    backgroundColor: 'red',
-    flex: 1,
-  },
   modalTopView: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
     paddingVertical: 10,
-    // maxHeight: 340,
+    minHeight: 180,
     backgroundColor: 'rgba(0,0,0,0.7)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -161,19 +173,17 @@ const styles = StyleSheet.create({
   imagesContainer: {
     width: 100,
     height: 100,
-    // flexDirection: 'row',
     backgroundColor: '#fff',
     gap: 10,
+    borderRadius: 10,
   },
   addPhotosBtn: {
     width: 100,
     height: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   modalViewBottom: {
     width: '100%',
-    minHeight: 284,
+    minHeight: 290,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -191,39 +201,3 @@ const styles = StyleSheet.create({
 });
 
 export default CameraModal;
-{
-  /* <FlatList
-            data={props.content}
-            contentContainerStyle={{
-              flexDirection: 'column',
-              rowGap: 10,
-            }}
-            columnWrapperStyle={{
-              justifyContent: 'space-between',
-            }}
-            renderItem={({ item }) => (
-              <Image
-                source={{ uri: item.uri }}
-                style={styles.imagesContainer}
-              />
-            )}
-            keyExtractor={(item,index) => index}
-            numColumns={3}
-          /> */
-}
-{
-  /* <View
-          style={{
-            alignItems: 'flex-end',
-            // justifyContent: 'center',
-            backgroundColor: '#fff',
-            paddingVertical: 8,
-            paddingHorizontal: 14,
-          }}
-        >
-        </View> */
-}
-{
-  /* <View style={styles.modalViewTop}>
-        </View> */
-}
