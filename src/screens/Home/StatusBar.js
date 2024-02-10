@@ -25,22 +25,21 @@ export const StatusBarUsers = () => {
       userName: 'aamir',
     });
   }
-  const userId = useSelector(
-    (state) => state.auth.currentUser?.currentActiveUser.userId
-  );
-  const [userImage, setUserImage] = useState(null);
+  const userId = useSelector((state) => state.auth.currentUser?.userId);
+  const [userProImage, setUserProImage] = useState(null);
   const uploadUserProfilePhoto = async (uri) => {
     try {
-      if (userImage) {
+      if (userProImage) {
         const resp = await fetch(uri);
         const blobType = await resp.blob();
         const storageRef = ref(storage, `userProfileImages/${nanoid()}`);
-
+        console.log('ereeee');
         await uploadBytes(storageRef, blobType);
 
         const downloadURL = await getDownloadURL(storageRef);
         const userDocRef = doc(firestoreDb, 'users', userId);
         await setDoc(userDocRef, { proImgLink: downloadURL }, { merge: true });
+        setUserProImage(null);
       }
     } catch (error) {
       console.error('Error uploading user profile photo:', error);
@@ -50,12 +49,10 @@ export const StatusBarUsers = () => {
 
   const profileImage = async () => {
     response = await launchLibrary();
-    await setUserImage(response);
+    await setUserProImage(response);
     uploadUserProfilePhoto(response.uri);
   };
-  const activeUser = useSelector(
-    (state) => state.auth.currentUser.currentActiveUser
-  );
+  const activeUser = useSelector((state) => state.auth?.currentUser);
   return (
     <ScrollView
       horizontal
@@ -64,7 +61,7 @@ export const StatusBarUsers = () => {
       contentContainerStyle={styles.contentContainer}
     >
       <StatusUser
-        userImage={activeUser?.proImgLink}
+        userImage={userProImage?.uri}
         userName={activeUser?.username}
         size={70}
         onPress={profileImage}
@@ -72,7 +69,7 @@ export const StatusBarUsers = () => {
       {images.map((image) => (
         <StatusUser
           key={image.id}
-          userImage={image.userImage}
+          userImage={image.imageURl}
           userName={image.userName}
         />
       ))}

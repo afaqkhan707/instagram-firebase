@@ -1,15 +1,7 @@
 import { nanoid } from '@reduxjs/toolkit';
 import React, { useState } from 'react';
-import {
-  Alert,
-  StyleSheet,
-  View,
-  Image,
-  FlatList,
-  ScrollView,
-  Text,
-} from 'react-native';
-import { Button, IconButton } from 'react-native-paper';
+import { Alert, StyleSheet, View, Image, ScrollView, Text } from 'react-native';
+import { Button, IconButton, ProgressBar } from 'react-native-paper';
 import { TextInput } from 'react-native-paper';
 import { launchCamera } from '../utils/launchCamera';
 import AppBarBackIcon from './BackBtnIcon';
@@ -18,19 +10,22 @@ import { firestoreDb, storage } from '../firebase/firebaseConf';
 import { useSelector } from 'react-redux';
 import Modal from 'react-native-modal';
 import { addDoc, collection, doc } from 'firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
 
 const CameraModal = ({
   postContent,
+  setPostContent,
   modalVisible,
   setModalVisible,
   setContentData,
 }) => {
-  // const userId = useSelector((state) => state.auth?.user);
+  const userId = useSelector((state) => state.auth?.currentUser?.userId);
   const [description, setDescription] = useState('');
+  const [progress, setProgress] = useState(0);
   const [location, setLocation] = useState('');
   const [sendLoading, setSendLoading] = useState(false);
   const [setupUp, setSetupUp] = useState(1);
-
+  const navigation = useNavigation();
   const sendPost = async () => {
     setSendLoading(true);
     try {
@@ -44,14 +39,14 @@ const CameraModal = ({
         postImage: uploadTasks,
         comments: [],
         likes: 0,
-        userId: '',
+        userId,
         address: location,
         description: description,
-        postId: '',
+        postId: nanoid(),
       };
       await addDoc(collection(firestoreDb, 'posts'), data);
       setModalVisible(!modalVisible);
-      console.log(data, 'data');
+      setPostContent([]);
     } catch (error) {
       console.error('Error uploading images or getting download URLs:', error);
     } finally {
@@ -82,6 +77,14 @@ const CameraModal = ({
   };
   const BackModalCamera = () => {
     setSetupUp(setupUp - 1);
+  };
+  const NavigatetoDashboard = async () => {
+    navigation.navigate('dashboard');
+    setPostContent([]);
+    setModalVisible(!modalVisible);
+  };
+  const removeContent = (index) => {
+    setPostContent(postContent.filter((_, idx) => idx !== index));
   };
 
   return (
@@ -117,11 +120,27 @@ const CameraModal = ({
                 <View style={styles.modalTopView}>
                   {postContent &&
                     postContent.map((item, index) => (
-                      <Image
-                        source={{ uri: item.uri }}
+                      <View
                         key={index}
-                        style={styles.imagesContainer}
-                      />
+                        style={{ flexDirection: 'row', position: 'relative' }}
+                      >
+                        <Image
+                          source={{ uri: item?.uri }}
+                          style={styles.imagesContainer}
+                        />
+                        <IconButton
+                          icon='close-circle-outline'
+                          // icon='close-box'
+                          onPress={() => removeContent(index)}
+                          style={{
+                            position: 'absolute',
+                            top: -18,
+                            right: -16,
+                            zIndex: 1,
+                          }}
+                          iconColor='#ee2a7b'
+                        />
+                      </View>
                     ))}
                   <View>
                     <IconButton
@@ -134,13 +153,29 @@ const CameraModal = ({
                 </View>
               </ScrollView>
             </View>
-            <View style={{ paddingVertical: 3 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 10,
+                marginTop: 10,
+              }}
+            >
+              <Button
+                loading={sendLoading}
+                icon='backspace-outline'
+                onPress={NavigatetoDashboard}
+                mode='elevated'
+                // textColor='#ee2a7b'
+              >
+                Cancel
+              </Button>
               <Button
                 loading={sendLoading}
                 icon='forward'
                 onPress={NextModal}
                 mode='elevated'
-                textColor='#ee2a7b'
+                // textColor='#ee2a7b'
               >
                 Next
               </Button>
@@ -165,6 +200,7 @@ const CameraModal = ({
                 }}
                 activeOutlineColor='#333'
               />
+
               <TextInput
                 label='Location'
                 value={location}
@@ -179,6 +215,20 @@ const CameraModal = ({
                 activeOutlineColor='#333'
               />
             </View>
+            {progress > 0 && (
+              <View
+                style={{
+                  backgroundColor: '#fff',
+                  minHeight: 20,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: 16,
+                  borderRadius: 12,
+                }}
+              >
+                <ProgressBar progress={0.5} color='red' width={266} />
+              </View>
+            )}
             <View
               style={{
                 flexDirection: 'row',
@@ -186,27 +236,23 @@ const CameraModal = ({
                 paddingHorizontal: 10,
               }}
             >
-              <View>
-                <Button
-                  icon='keyboard-return'
-                  onPress={BackModalCamera}
-                  mode='elevated'
-                  textColor='#ee2a7b'
-                >
-                  Back
-                </Button>
-              </View>
-              <View>
-                <Button
-                  loading={sendLoading}
-                  icon='send'
-                  onPress={sendPost}
-                  mode='elevated'
-                  textColor='#ee2a7b'
-                >
-                  Send Post
-                </Button>
-              </View>
+              <Button
+                icon='keyboard-return'
+                onPress={BackModalCamera}
+                mode='elevated'
+                textColor='#ee2a7b'
+              >
+                Back
+              </Button>
+              <Button
+                loading={sendLoading}
+                icon='send'
+                onPress={sendPost}
+                mode='elevated'
+                textColor='#ee2a7b'
+              >
+                Send Post
+              </Button>
             </View>
           </>
         )}

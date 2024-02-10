@@ -3,6 +3,7 @@ import { BottomNavigation, Text, StatusBar } from 'react-native-paper';
 import SerachTab from '../Search';
 import HomeTab from '../Home';
 import AddTab from '../Add';
+import Setting from '../Settings';
 const Dashboard = () => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -31,7 +32,7 @@ const Dashboard = () => {
   const SearchRoute = () => <SerachTab />;
   const AddRoute = () => <AddTab />;
   const NotificationsRoute = () => <Text>Notifications</Text>;
-  const Heart = () => <Text>Notifications</Text>;
+  const Heart = () => <Setting />;
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,

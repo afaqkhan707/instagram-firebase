@@ -127,9 +127,9 @@ export const Logout = (navigation) => async (dispatch) => {
     console.error('Error in logoutUser:', error);
     dispatch(setError(error.message));
   } finally {
-    dispatch(setLoading(false));
   }
 };
+
 export const createPost = () => async (dispatch) => {
   const post = {
     type: 'image',
@@ -142,32 +142,4 @@ export const createPost = () => async (dispatch) => {
     comments: [],
     postId: '',
   };
-};
-export const uploadContent = async (postContent) => {
-  // const userImage = e.target.files[0];
-
-  if (postContent && user) {
-    const imageUrl = URL.createObjectURL(postContent);
-    setProfileImg(imageUrl);
-
-    // Create a storage reference
-    const storageRef = ref(
-      storage,
-      `profile_images/${user.userId}_${postContent.name}`
-    );
-
-    await uploadBytes(storageRef, postContent);
-
-    // Get the download URL of the uploaded image
-    const downloadUrl = await getDownloadURL(storageRef);
-
-    // Update user document with the image URL
-    const userDocRef = doc(firestoreDb, 'posts', user.userId);
-    // Replace 'YOUR_COLLECTION' with your actual collection name
-    await setDoc(userDocRef, { proImgLink: downloadUrl }, { merge: true });
-    // console.log(
-    //   'Image uploaded to Firebase Storage and user document:',
-    //   downloadUrl
-    // );
-  }
 };

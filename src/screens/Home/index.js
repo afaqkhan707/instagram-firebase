@@ -18,6 +18,7 @@ const HomeTab = () => {
       <CameraModal
         setContentData={setContent}
         postContent={postContent}
+        setPostContent={setPostContent}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />
