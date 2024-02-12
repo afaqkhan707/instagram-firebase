@@ -4,8 +4,12 @@ import SerachTab from '../Search';
 import HomeTab from '../Home';
 import AddTab from '../Add';
 import Setting from '../Settings';
+import { useDispatch } from 'react-redux';
+import { getAllUsers } from '../../redux/services/firebaseActions';
 const Dashboard = () => {
   const [index, setIndex] = React.useState(0);
+  const dispatch = useDispatch();
+
   const [routes] = React.useState([
     {
       key: 'home',
@@ -41,6 +45,9 @@ const Dashboard = () => {
     heart: NotificationsRoute,
     account: Heart,
   });
+  React.useEffect(() => {
+    dispatch(getAllUsers());
+  }, []);
 
   return (
     <>

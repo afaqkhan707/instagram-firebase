@@ -10,10 +10,19 @@ import {
   googleProvider,
   storage,
 } from '../../firebase/firebaseConf';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import {
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  query,
+  collection,
+  snapshotEqual,
+} from 'firebase/firestore';
 import { setCurrentUser } from '../slices/authSlice';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-
+import { setRandomUsers, setError } from '../slices/otherUsersSlice';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 export const registerUser =
   (values, navigation, setLoading, resetSignupForm) => async (dispatch) => {
     try {
@@ -129,6 +138,35 @@ export const Logout = (navigation) => async (dispatch) => {
   } finally {
   }
 };
+export const CheckActiveUser = () => async (dispatch) => {
+  try {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const docRef = doc(collection(firestoreDb, 'users'), user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const userDetails = docSnap.data();
+          dispatch(
+            setCurrentUser({
+              currentActiveUser: userDetails,
+              status: true,
+              error: null,
+            })
+          );
+        } else {
+          dispatch(
+            setCurrentUser({
+              currentActiveUser: null,
+              status: false,
+            })
+          );
+        }
+      }
+    });
+  } catch (err) {
+    console.log(err, 'error while searching user');
+  }
+};
 
 export const createPost = () => async (dispatch) => {
   const post = {
@@ -143,3 +181,45 @@ export const createPost = () => async (dispatch) => {
     postId: '',
   };
 };
+export const getAllUsers = () => async (dispatch) => {
+  try {
+    const usersRef = query(collection(firestoreDb, 'users'));
+    const querySnapshot = await getDocs(usersRef);
+    const users = [];
+    querySnapshot.forEach((doc) => {
+      console.log(doc.id, ' => ', doc.data());
+      users.push({ ...doc.data(), id: doc.id });
+    });
+    dispatch(setRandomUsers(users));
+  } catch (error) {
+    dispatch(setError(error.message));
+  } finally {
+  }
+};
+// const usersRef = collection(firestoreDb, 'users');
+// export const getAllUsers = createAsyncThunk(
+//   'users/getAllUsers',
+//   async (_, { dispatch }) => {
+//     try {
+//       const querySnapshot = await getDocs(usersRef);
+//       const cachedUsers = useSelector((state) => state.users.allUsers); // Get cached users
+
+//       const hasUpdated =
+//         !cachedUsers ||
+//         !querySnapshot.docs.every((doc) => {
+//           const cachedDoc = cachedUsers.find((cached) => cached.id === doc.id);
+//           return cachedDoc && snapshotEqual(cachedDoc, doc); // Deep comparison
+//         });
+
+//       if (hasUpdated) {
+//         const users = querySnapshot.docs.map((doc) => ({
+//           ...doc.data(),
+//           id: doc.id,
+//         }));
+//         dispatch(setRandomUsers(users)); // Dispatch action only if there's an update
+//       }
+//     } catch (error) {
+//       dispatch(setError(error.message));
+//     }
+//   }
+// );

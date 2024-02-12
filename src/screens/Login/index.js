@@ -10,22 +10,25 @@ import React, { useState } from 'react';
 import AppBarBackIcon from '../../components/BackBtnIcon';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
-import { Button, HelperText, Icon, TextInput } from 'react-native-paper';
+import { Button, HelperText } from 'react-native-paper';
 import { loginSchema } from '../../schemas/formikSchemas';
 import CustomTextInput from '../../components/CustomTextInput';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   continueWithGoogle,
   loginUser,
 } from '../../redux/services/firebaseActions';
-
+import { setCurrentUser } from '../../redux/slices/authSlice';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, firestoreDb } from '../../firebase/firebaseConf.js';
+import { collection, doc, getDoc } from 'firebase/firestore';
 const Login = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [loadingLogin, setLoadingLogin] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [visiblePassword, setVisiblePassword] = useState(false);
-
+  // const authUser = useSelector((state) => state.auth.currentActiveUser?.userId);
   const navigateToSignup = () => {
     navigation.navigate('signup');
   };
@@ -37,6 +40,7 @@ const Login = () => {
     setGoogleLoading(true);
     // dispatch(continueWithGoogle(navigation, setGoogleLoading));
   };
+
   return (
     <ScrollView>
       <AppBarBackIcon onPress={navigateToSignup} />

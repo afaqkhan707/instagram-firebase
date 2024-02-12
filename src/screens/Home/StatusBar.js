@@ -9,6 +9,8 @@ import { nanoid } from '@reduxjs/toolkit';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 export const StatusBarUsers = () => {
+  const loadingUser = useSelector((state) => state.auth.isLoading);
+
   const images = [
     {
       id: 1,
@@ -26,6 +28,7 @@ export const StatusBarUsers = () => {
     });
   }
   const userId = useSelector((state) => state.auth.currentUser?.userId);
+
   const [userProImage, setUserProImage] = useState(null);
   const uploadUserProfilePhoto = async (uri) => {
     try {
@@ -49,7 +52,7 @@ export const StatusBarUsers = () => {
 
   const profileImage = async () => {
     response = await launchLibrary();
-    await setUserProImage(response);
+    setUserProImage(response);
     uploadUserProfilePhoto(response.uri);
   };
   const activeUser = useSelector((state) => state.auth?.currentUser);
@@ -61,16 +64,18 @@ export const StatusBarUsers = () => {
       contentContainerStyle={styles.contentContainer}
     >
       <StatusUser
-        userImage={userProImage?.uri}
+        userImage={activeUser?.proImgLink}
         userName={activeUser?.username}
         size={70}
         onPress={profileImage}
+        isLoading={loadingUser}
       />
       {images.map((image) => (
         <StatusUser
           key={image.id}
           userImage={image.imageURl}
           userName={image.userName}
+          size={64}
         />
       ))}
       <View
