@@ -5,14 +5,19 @@ import StatusBarUsers from './StatusBar';
 import Post from './Post';
 import CameraModal from '../../components/CameraModal';
 import StatusUser from '../../components/StatusUser';
+import { getAllUsers } from '../../redux/services/firebaseActions';
+import { useDispatch, useSelector } from 'react-redux';
 const HomeTab = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [postContent, setPostContent] = React.useState([]);
-
+  const dispatch = useDispatch();
   const setContent = (content) => {
     setPostContent([...postContent, content]);
   };
-
+  const userId = useSelector((state) => state.auth.currentUser?.userId);
+  React.useEffect(() => {
+    dispatch(getAllUsers(userId));
+  }, [userId]);
   return (
     <>
       <CameraModal

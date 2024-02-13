@@ -11,11 +11,12 @@ import CameraModal from './CameraModal';
 import { launchCamera } from '../utils/launchCamera';
 
 const HomeAppBar = ({ setContentData, setModalVisible }) => {
-  const naviagtion = useNavigation();
+  // const naviagtion = useNavigation();
 
   const cameraLaunched = async () => {
     setModalVisible(true);
     const respContent = await launchCamera();
+    console.log(respContent, 'cameraOpened');
     setContentData(respContent);
   };
 

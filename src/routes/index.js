@@ -63,15 +63,13 @@ const MyStack = () => {
   }, []);
 
   useEffect(() => {
-    // console.log(isLogged ? 'true' : 'false');
+    console.log(isLogged ? 'true' : 'false');
   }, [isLogged]);
 
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName={isLogged ? 'dashboard' : 'dashboard'}
-        >
+        <Stack.Navigator initialRouteName={isLogged ? 'dashboard' : 'login'}>
           <Stack.Screen
             name='login'
             component={Login}

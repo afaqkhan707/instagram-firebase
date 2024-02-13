@@ -23,10 +23,18 @@ const authSlice = createSlice({
       state.isLoading = action.payload;
       console.log(action.payload, 'isLoading');
     },
+    setUpdateProImg: (state, action) => {
+      state.currentUser.proImgLink = action.payload;
+    },
   },
 });
 
-export const { setCurrentUser, setIsLoading, setIsError, setIsLoggedIn } =
-  authSlice.actions;
+export const {
+  setCurrentUser,
+  setIsLoading,
+  setIsError,
+  setIsLoggedIn,
+  setUpdateProImg,
+} = authSlice.actions;
 
 export default authSlice.reducer;

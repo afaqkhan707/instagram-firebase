@@ -45,9 +45,7 @@ const Dashboard = () => {
     heart: NotificationsRoute,
     account: Heart,
   });
-  React.useEffect(() => {
-    dispatch(getAllUsers());
-  }, []);
+
 
   return (
     <>

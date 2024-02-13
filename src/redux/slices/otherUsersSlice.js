@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
-  randomUsers: [],
+  randomUsersLocal: [],
   loading: false,
   error: null,
 };
@@ -9,7 +9,7 @@ const randomUsers = createSlice({
   initialState,
   reducers: {
     setRandomUsers: (state, action) => {
-      state.otherUsers = action.payload;
+      state.randomUsersLocal = action.payload;
     },
     setError: (state, action) => {
       state.error = action.payload;

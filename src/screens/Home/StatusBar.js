@@ -1,49 +1,29 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
 import React, { useState } from 'react';
 import StatusUser from '../../components/StatusUser';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { launchLibrary } from '../../utils/launchLibrary';
 import { doc, setDoc } from 'firebase/firestore';
 import { firestoreDb, storage } from '../../firebase/firebaseConf';
 import { nanoid } from '@reduxjs/toolkit';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { setCurrentUser, setUpdateProImg } from '../../redux/slices/authSlice';
 
 export const StatusBarUsers = () => {
   const loadingUser = useSelector((state) => state.auth.isLoading);
-
-  const images = [
-    {
-      id: 1,
-      imageURl:
-        'https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      userName: 'aamir',
-    },
-  ];
-
-  for (let i = 1; i < 20; i++) {
-    images.push({
-      id: i + 1,
-      imageURl: images[0].imageURl,
-      userName: 'aamir',
-    });
-  }
+  const otherUsers = useSelector((state) => state.randomUsers.randomUsersLocal);
   const userId = useSelector((state) => state.auth.currentUser?.userId);
-
-  const [userProImage, setUserProImage] = useState(null);
+  const dispatch = useDispatch();
   const uploadUserProfilePhoto = async (uri) => {
     try {
-      if (userProImage) {
-        const resp = await fetch(uri);
-        const blobType = await resp.blob();
-        const storageRef = ref(storage, `userProfileImages/${nanoid()}`);
-        console.log('ereeee');
-        await uploadBytes(storageRef, blobType);
-
-        const downloadURL = await getDownloadURL(storageRef);
-        const userDocRef = doc(firestoreDb, 'users', userId);
-        await setDoc(userDocRef, { proImgLink: downloadURL }, { merge: true });
-        setUserProImage(null);
-      }
+      const resp = await fetch(uri);
+      const blobType = await resp.blob();
+      const storageRef = ref(storage, `userProfileImages/${nanoid()}`);
+      await uploadBytes(storageRef, blobType);
+      const downloadURL = await getDownloadURL(storageRef);
+      const userDocRef = doc(firestoreDb, 'users', userId);
+      await setDoc(userDocRef, { proImgLink: downloadURL }, { merge: true });
+      dispatch(setUpdateProImg(downloadURL));
     } catch (error) {
       console.error('Error uploading user profile photo:', error);
       throw error;
@@ -51,11 +31,15 @@ export const StatusBarUsers = () => {
   };
 
   const profileImage = async () => {
-    response = await launchLibrary();
-    setUserProImage(response);
-    uploadUserProfilePhoto(response.uri);
+    const response = await launchLibrary();
+    await uploadUserProfilePhoto(response?.uri);
+    // console.log(response?.uri, 'image');
   };
   const activeUser = useSelector((state) => state.auth?.currentUser);
+  React.useEffect(() => {
+    console.log(activeUser.proImgLink, 'image');
+  }, [activeUser]);
+
   return (
     <ScrollView
       horizontal
@@ -70,14 +54,28 @@ export const StatusBarUsers = () => {
         onPress={profileImage}
         isLoading={loadingUser}
       />
-      {images.map((image) => (
-        <StatusUser
-          key={image.id}
-          userImage={image.imageURl}
-          userName={image.userName}
-          size={64}
-        />
-      ))}
+      {/* {otherUsers &&
+        otherUsers.map((users) => (
+          <StatusUser
+            key={users?.userId}
+            userImage={users?.proImgLink}
+            userName={users?.username}
+            size={64}
+          />
+        ))} */}
+
+      <FlatList
+        data={otherUsers}
+        renderItem={({ item }) => (
+          <StatusUser
+            key={item.userId}
+            userImage={item.proImgLink}
+            userName={item.username}
+            size={64}
+          />
+        )}
+        keyExtractor={(item) => item.userId}
+      />
       <View
         style={{ borderBottomWidth: 1, borderColor: '#0000001a', flex: 1 }}
       ></View>

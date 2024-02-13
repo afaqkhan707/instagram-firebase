@@ -18,6 +18,7 @@ import {
   query,
   collection,
   snapshotEqual,
+  where,
 } from 'firebase/firestore';
 import { setCurrentUser } from '../slices/authSlice';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -181,13 +182,17 @@ export const createPost = () => async (dispatch) => {
     postId: '',
   };
 };
-export const getAllUsers = () => async (dispatch) => {
+export const getAllUsers = (userId) => async (dispatch) => {
   try {
-    const usersRef = query(collection(firestoreDb, 'users'));
+    const usersRef = query(
+      collection(firestoreDb, 'users'),
+      where('userId', '!=', userId)
+    );
+
     const querySnapshot = await getDocs(usersRef);
     const users = [];
     querySnapshot.forEach((doc) => {
-      console.log(doc.id, ' => ', doc.data());
+      // console.log(doc.id, ' => ', doc.data());
       users.push({ ...doc.data(), id: doc.id });
     });
     dispatch(setRandomUsers(users));

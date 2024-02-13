@@ -26,6 +26,7 @@ const CameraModal = ({
   const [sendLoading, setSendLoading] = useState(false);
   const [setupUp, setSetupUp] = useState(1);
   const navigation = useNavigation();
+  const [res, setRes] = useState(0);
   const sendPost = async () => {
     setSendLoading(true);
     try {
@@ -71,6 +72,9 @@ const CameraModal = ({
   const openCamera = async () => {
     const respContent = await launchCamera();
     await setContentData(respContent);
+    if (respContent.length === 0) {
+      setRes(1);
+    }
   };
   const NextModal = () => {
     setSetupUp(setupUp + 1);
@@ -86,6 +90,9 @@ const CameraModal = ({
   const removeContent = (index) => {
     setPostContent(postContent.filter((_, idx) => idx !== index));
   };
+  if (res === 0) {
+    return;
+  }
 
   return (
     <View style={styles.centeredView}>
