@@ -16,22 +16,7 @@ const HomeAppBar = ({ setContentData, setModalVisible }) => {
   const cameraLaunched = async () => {
     setModalVisible(true);
     const respContent = await launchCamera();
-    console.log(respContent, 'cameraOpened');
     setContentData(respContent);
-  };
-
-  const pickImageLibrary = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
   };
 
   return (

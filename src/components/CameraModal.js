@@ -4,13 +4,14 @@ import { Alert, StyleSheet, View, Image, ScrollView, Text } from 'react-native';
 import { Button, IconButton, ProgressBar } from 'react-native-paper';
 import { TextInput } from 'react-native-paper';
 import { launchCamera } from '../utils/launchCamera';
-import AppBarBackIcon from './BackBtnIcon';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { firestoreDb, storage } from '../firebase/firebaseConf';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-native-modal';
 import { addDoc, collection, doc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
+import { uploadImage } from '../redux/services/firebaseActions';
+import { setPostError } from '../redux/slices/postSlice';
 
 const CameraModal = ({
   postContent,
@@ -20,18 +21,20 @@ const CameraModal = ({
   setContentData,
 }) => {
   const userId = useSelector((state) => state.auth?.currentUser?.userId);
+  const errorPost = useSelector((state) => state.post?.errorPost);
   const [description, setDescription] = useState('');
   const [progress, setProgress] = useState(0);
   const [location, setLocation] = useState('');
   const [sendLoading, setSendLoading] = useState(false);
   const [setupUp, setSetupUp] = useState(1);
   const navigation = useNavigation();
-  const [res, setRes] = useState(0);
+  const dispatch = useDispatch();
   const sendPost = async () => {
     setSendLoading(true);
     try {
       const uploadTasks = [];
       for (const imageUrl of postContent) {
+        // const response = await dispatch(uploadImage(imageUrl.uri));
         const response = await uploadImage(imageUrl.uri);
         uploadTasks.push(response);
       }
@@ -39,6 +42,7 @@ const CameraModal = ({
       const data = {
         postImage: uploadTasks,
         comments: [],
+        fileType: 'images',
         likes: 0,
         userId,
         address: location,
@@ -46,12 +50,16 @@ const CameraModal = ({
         postId: nanoid(),
       };
       await addDoc(collection(firestoreDb, 'posts'), data);
-      setModalVisible(!modalVisible);
+      setModalVisible(false);
+      setDescription('');
+      setLocation('');
+      setSendLoading(false);
+
       setPostContent([]);
     } catch (error) {
-      console.error('Error uploading images or getting download URLs:', error);
-    } finally {
+      dispatch(setPostError(error.code));
       setSendLoading(false);
+    } finally {
     }
   };
   const uploadImage = async (uri) => {
@@ -72,9 +80,6 @@ const CameraModal = ({
   const openCamera = async () => {
     const respContent = await launchCamera();
     await setContentData(respContent);
-    if (respContent.length === 0) {
-      setRes(1);
-    }
   };
   const NextModal = () => {
     setSetupUp(setupUp + 1);
@@ -90,9 +95,6 @@ const CameraModal = ({
   const removeContent = (index) => {
     setPostContent(postContent.filter((_, idx) => idx !== index));
   };
-  if (res === 0) {
-    return;
-  }
 
   return (
     <View style={styles.centeredView}>
@@ -160,6 +162,7 @@ const CameraModal = ({
                 </View>
               </ScrollView>
             </View>
+
             <View
               style={{
                 flexDirection: 'row',
@@ -234,6 +237,13 @@ const CameraModal = ({
                 }}
               >
                 <ProgressBar progress={0.5} color='red' width={266} />
+              </View>
+            )}
+            {errorPost && (
+              <View
+                style={{ backgroundColor: 'green', minHeight: 20, padding: 10 }}
+              >
+                <Text>{errorPost} ,Check Your Internet Connection</Text>
               </View>
             )}
             <View

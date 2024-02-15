@@ -4,12 +4,7 @@ import {
   signOut,
   signInWithPopup,
 } from 'firebase/auth';
-import {
-  auth,
-  firestoreDb,
-  googleProvider,
-  storage,
-} from '../../firebase/firebaseConf';
+import { auth, firestoreDb, googleProvider } from '../../firebase/firebaseConf';
 import {
   doc,
   setDoc,
@@ -17,13 +12,14 @@ import {
   getDocs,
   query,
   collection,
-  snapshotEqual,
   where,
 } from 'firebase/firestore';
 import { setCurrentUser } from '../slices/authSlice';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { setRandomUsers, setError } from '../slices/otherUsersSlice';
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { setPost, setPostError } from '../slices/postSlice';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+
+// Handle NewUser Signup
 export const registerUser =
   (values, navigation, setLoading, resetSignupForm) => async (dispatch) => {
     try {
@@ -55,6 +51,7 @@ export const registerUser =
       setLoading(false);
     }
   };
+// Handle Login
 export const loginUser =
   (values, navigation, setLoadingLogin, resetFormLogin) => async (dispatch) => {
     try {
@@ -64,7 +61,7 @@ export const loginUser =
         values.password
       );
       const userId = resp?.user?.uid;
-      window.navigator.userAgent = 'ReactNative';
+      // window.navigator.userAgent = 'ReactNative';
       const userDoc = await getDoc(doc(firestoreDb, 'users', userId));
       const currentUserData = userDoc.data();
       console.log(currentUserData);
@@ -83,13 +80,12 @@ export const loginUser =
       } else if (error.code === 'auth/invalid-email') {
         console.log('That email or password is invalid!');
       } else {
-        console.log(error, 'Error while signup');
+        console.log(error, 'Error while Login');
       }
     } finally {
       setLoadingLogin(false);
     }
   };
-
 //Handle User with Google
 export const continueWithGoogle =
   (navigation, setLoadingGoogle) => async (dispatch) => {
@@ -122,7 +118,6 @@ export const continueWithGoogle =
       setLoadingGoogle(false);
     }
   };
-
 // Handle Logout  User
 export const Logout = (navigation) => async (dispatch) => {
   try {
@@ -139,6 +134,7 @@ export const Logout = (navigation) => async (dispatch) => {
   } finally {
   }
 };
+// Handle Active User
 export const CheckActiveUser = () => async (dispatch) => {
   try {
     onAuthStateChanged(auth, async (user) => {
@@ -168,31 +164,17 @@ export const CheckActiveUser = () => async (dispatch) => {
     console.log(err, 'error while searching user');
   }
 };
-
-export const createPost = () => async (dispatch) => {
-  const post = {
-    type: 'image',
-    content: [],
-    userId: '',
-    postDescription: '',
-    createdAt: firebase.firestore().FieldValue.serverTimestamp(),
-    likes: 0,
-    location: '',
-    comments: [],
-    postId: '',
-  };
-};
+// Handle Get All Users
 export const getAllUsers = (userId) => async (dispatch) => {
+  // dispatch(setLoading(true));
   try {
     const usersRef = query(
       collection(firestoreDb, 'users'),
       where('userId', '!=', userId)
     );
-
     const querySnapshot = await getDocs(usersRef);
     const users = [];
     querySnapshot.forEach((doc) => {
-      // console.log(doc.id, ' => ', doc.data());
       users.push({ ...doc.data(), id: doc.id });
     });
     dispatch(setRandomUsers(users));
@@ -201,30 +183,33 @@ export const getAllUsers = (userId) => async (dispatch) => {
   } finally {
   }
 };
-// const usersRef = collection(firestoreDb, 'users');
-// export const getAllUsers = createAsyncThunk(
-//   'users/getAllUsers',
-//   async (_, { dispatch }) => {
-//     try {
-//       const querySnapshot = await getDocs(usersRef);
-//       const cachedUsers = useSelector((state) => state.users.allUsers); // Get cached users
 
-//       const hasUpdated =
-//         !cachedUsers ||
-//         !querySnapshot.docs.every((doc) => {
-//           const cachedDoc = cachedUsers.find((cached) => cached.id === doc.id);
-//           return cachedDoc && snapshotEqual(cachedDoc, doc); // Deep comparison
-//         });
-
-//       if (hasUpdated) {
-//         const users = querySnapshot.docs.map((doc) => ({
-//           ...doc.data(),
-//           id: doc.id,
-//         }));
-//         dispatch(setRandomUsers(users)); // Dispatch action only if there's an update
-//       }
-//     } catch (error) {
-//       dispatch(setError(error.message));
-//     }
+export const getPosts = () => async (dispatch) => {
+  try {
+    const usersRef = query(collection(firestoreDb, 'posts'));
+    const querySnapshot = await getDocs(usersRef);
+    const posts = [];
+    querySnapshot.forEach((doc) => {
+      posts.push({ ...doc.data(), id: doc.id });
+    });
+    dispatch(setPost(posts));
+  } catch (error) {
+    dispatch(setPostError(error.message));
+  } finally {
+  }
+};
+// export const uploadImage = async (uri) => async (dispatch) => {
+//   try {
+//     const response = await fetch(uri);
+//     const blob = await response.blob();
+//     const storageRef = ref(storage, 'post_media_files/');
+//     const filename = `${Date.now()}-${nanoid()}`;
+//     const imageRef = ref(storageRef, filename);
+//     await uploadBytes(imageRef, blob);
+//     const downloadURL = await getDownloadURL(imageRef);
+//     return downloadURL;
+//   } catch (error) {
+//     console.error('Error uploading image:', error);
+//     throw error;
 //   }
-// );
+// };

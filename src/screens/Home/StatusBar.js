@@ -2,19 +2,20 @@ import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
 import React, { useState } from 'react';
 import StatusUser from '../../components/StatusUser';
 import { useDispatch, useSelector } from 'react-redux';
-import { launchLibrary } from '../../utils/launchLibrary';
+import { launchLibraryImages } from '../../utils/launchLibrary';
 import { doc, setDoc } from 'firebase/firestore';
 import { firestoreDb, storage } from '../../firebase/firebaseConf';
 import { nanoid } from '@reduxjs/toolkit';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { setCurrentUser, setUpdateProImg } from '../../redux/slices/authSlice';
+import { setUpdateProImg } from '../../redux/slices/authSlice';
 
-export const StatusBarUsers = () => {
+const StatusBarUsers = () => {
   const loadingUser = useSelector((state) => state.auth.isLoading);
   const otherUsers = useSelector((state) => state.randomUsers.randomUsersLocal);
   const userId = useSelector((state) => state.auth.currentUser?.userId);
   const dispatch = useDispatch();
   const uploadUserProfilePhoto = async (uri) => {
+    if (!uri) return;
     try {
       const resp = await fetch(uri);
       const blobType = await resp.blob();
@@ -31,14 +32,10 @@ export const StatusBarUsers = () => {
   };
 
   const profileImage = async () => {
-    const response = await launchLibrary();
+    const response = await launchLibraryImages();
     await uploadUserProfilePhoto(response?.uri);
-    // console.log(response?.uri, 'image');
   };
   const activeUser = useSelector((state) => state.auth?.currentUser);
-  React.useEffect(() => {
-    console.log(activeUser.proImgLink, 'image');
-  }, [activeUser]);
 
   return (
     <ScrollView
@@ -66,6 +63,7 @@ export const StatusBarUsers = () => {
 
       <FlatList
         data={otherUsers}
+        contentContainerStyle={{ flexDirection: 'row', gap: 10 }}
         renderItem={({ item }) => (
           <StatusUser
             key={item.userId}
@@ -82,7 +80,6 @@ export const StatusBarUsers = () => {
     </ScrollView>
   );
 };
-
 export default StatusBarUsers;
 
 const styles = StyleSheet.create({

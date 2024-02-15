@@ -5,14 +5,13 @@ import Login from '../screens/Login';
 import Dashboard from '../screens/Dashboard';
 import Signup from '../screens/Signup';
 import CameraModalScreen from '../screens/Camera';
-import { createDispatchHook, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUser } from '../redux/slices/authSlice';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, getDoc } from 'firebase/firestore';
 import { auth, firestoreDb } from '../firebase/firebaseConf';
 import LoaderPage from '../components/Loader';
 import { setIsLoading } from '../redux/slices/authSlice';
-import { UseDispatch } from 'react-redux';
 // import { CheckActiveUser } from '../redux/services/firebaseActions';
 
 const Stack = createNativeStackNavigator();

@@ -1,12 +1,13 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View, StatusBar } from 'react-native';
+import { ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import HomeAppBar from '../../components/HomeAppBar';
 import StatusBarUsers from './StatusBar';
 import Post from './Post';
 import CameraModal from '../../components/CameraModal';
 import StatusUser from '../../components/StatusUser';
-import { getAllUsers } from '../../redux/services/firebaseActions';
+import { getAllUsers, getPosts } from '../../redux/services/firebaseActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { Text } from 'react-native-paper';
 const HomeTab = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [postContent, setPostContent] = React.useState([]);
@@ -15,9 +16,26 @@ const HomeTab = () => {
     setPostContent([...postContent, content]);
   };
   const userId = useSelector((state) => state.auth.currentUser?.userId);
+
+  const posts = useSelector((state) => state.post.posts);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
   React.useEffect(() => {
     dispatch(getAllUsers(userId));
   }, [userId]);
+
+  // React.useEffect(() => {
+  //   dispatch(getPosts(userId));
+  // }, []);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+    dispatch(getPosts(userId));
+  }, []);
   return (
     <>
       <CameraModal
@@ -30,15 +48,21 @@ const HomeTab = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[0]}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+
         // StickyHeaderComponent={HomeAppBar}
       >
         <HomeAppBar
           setContentData={setContent}
           setModalVisible={setModalVisible}
         />
-
         <StatusBarUsers />
-        <Post />
+        {posts &&
+          posts.map((item) => {
+            return <Post key={item.id} postData={item} />;
+          })}
       </ScrollView>
     </>
   );
