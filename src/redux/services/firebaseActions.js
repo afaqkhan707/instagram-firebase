@@ -198,18 +198,3 @@ export const getPosts = () => async (dispatch) => {
   } finally {
   }
 };
-// export const uploadImage = async (uri) => async (dispatch) => {
-//   try {
-//     const response = await fetch(uri);
-//     const blob = await response.blob();
-//     const storageRef = ref(storage, 'post_media_files/');
-//     const filename = `${Date.now()}-${nanoid()}`;
-//     const imageRef = ref(storageRef, filename);
-//     await uploadBytes(imageRef, blob);
-//     const downloadURL = await getDownloadURL(imageRef);
-//     return downloadURL;
-//   } catch (error) {
-//     console.error('Error uploading image:', error);
-//     throw error;
-//   }
-// };

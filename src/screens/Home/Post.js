@@ -10,6 +10,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import { nanoid } from '@reduxjs/toolkit';
 import { doc, getDoc } from 'firebase/firestore';
 import { firestoreDb } from '../../firebase/firebaseConf';
+import CommentBottomSheet from '../../components/CommentBottomSheet';
 
 const Post = ({ postData }) => {
   const [isPostLiked, setIsPostLiked] = React.useState(false);
@@ -35,7 +36,8 @@ const Post = ({ postData }) => {
     try {
       userRef = doc(firestoreDb, 'users', postData.userId);
       user = await getDoc(userRef);
-      setCreatorInfo(user.data());
+      await setCreatorInfo(user.data());
+      // console.log(user.data().userId, 'postUser');
     } catch (error) {
       console.log(error, 'postUser');
     }
@@ -43,25 +45,40 @@ const Post = ({ postData }) => {
   useEffect(() => {
     getPostUser();
   }, []);
+  // console.log(postData.id, 'postId');
   return (
     <>
       {/* Post Content */}
       <View style={styles.postContainer}>
-        <PostHeader PostBy={creatorInfo} postLocation={postData.address} />
+        <PostHeader PostBy={creatorInfo} postData={postData} />
         {postData.postImage && postData.postImage.length > 0 && (
           <Carousel
+            loop
             style={styles.postImageContainer}
             data={postData?.postImage}
             width={370}
             scrollAnimationDuration={500}
-            renderItem={({ item }) => (
-              <Image source={{ uri: item }} style={styles.postImage} />
+            onSnapToItem={(index) => console.log('current index:', index)}
+            renderItem={({ item, index }) => (
+              <>
+                <Image source={{ uri: item }} style={styles.postImage} />
+                <View
+                  style={{
+                    flex: 1,
+                    borderWidth: 1,
+                    borderBottomColor: '#000000',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Text style={{ textAlign: 'center', fontSize: 30 }}>
+                    {index}Index
+                  </Text>
+                </View>
+              </>
             )}
-            key={({ item }) => item.id}
           />
         )}
       </View>
-
       {/* Post Footer Image Post */}
       <View style={styles.postFooter}>
         <View
@@ -79,11 +96,7 @@ const Post = ({ postData }) => {
               style={{ margin: 0, marginLeft: -10 }}
             />
 
-            <IconButton
-              icon={() => <Feather name='message-circle' size={24} />}
-              onPress={handleComment}
-              style={{ margin: 0 }}
-            />
+            <CommentBottomSheet createdBy={creatorInfo} postData={postData} />
 
             <IconButton
               icon={() => <Feather name='send' size={24} />}
@@ -111,7 +124,7 @@ const Post = ({ postData }) => {
             borderRadius: 10,
           }}
         >
-          <Text style={{ fontWeight: 700 }}>{postData.likes} likes</Text>
+          <Text style={{ fontWeight: 700 }}>{postData?.likes} likes</Text>
         </View>
         <View
           style={{
@@ -120,14 +133,13 @@ const Post = ({ postData }) => {
             gap: 10,
           }}
         >
-          <Text style={{ fontWeight: 700 }}>{creatorInfo.username}</Text>
-          <Text style={{ color: '#262626' }}>{postData.description}</Text>
+          <Text style={{ fontWeight: 700 }}>{creatorInfo?.username}</Text>
+          <Text style={{ color: '#262626' }}>{postData?.description}</Text>
         </View>
         <View>
-          <Text style={{ color: ' #00000066' }}>7 days Ago</Text>
+          <Text style={{ color: '#000000' }}>7 days Ago</Text>
         </View>
       </View>
-      {/* </View> */}
       {/* Post Content */}
     </>
   );
@@ -149,7 +161,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   postImage: {
-    minHeight: 375,
+    // minHeight: 375,
     height: '100%',
   },
   postVideo: {
@@ -157,123 +169,11 @@ const styles = StyleSheet.create({
     minHeight: 'auto',
   },
   postFooter: {
-    flexDirection: 'column',
-    justifyContent: 'center',
+    // flexDirection: 'column',
+    // justifyContent: 'center',
     minHeight: 60,
     backgroundColor: 'pink',
     paddingLeft: 16,
     paddingBottom: 8,
   },
 });
-
-{
-  /* <Carousel
-            loop
-            width={375}
-            height={375}
-            autoPlay={false}
-            data={imagesCa}
-            scrollAnimationDuration={1000}
-            onSnapToItem={(index) => console.log('current index:', index)}
-            renderItem={({ index }) => (
-              <View
-                style={{
-                  flex: 1,
-                  borderWidth: 1,
-                  justifyContent: 'center',
-                }}
-              >
-                <Text style={{ textAlign: 'center', fontSize: 30 }}>
-                  {index}
-                </Text>
-              </View>
-            )}
-          /> */
-}
-
-// const imagesCa = [
-//   {
-//     id: nanoid(),
-//     url: 'https://images.unsplash.com/photo-1647202324921-0177441f6aaa?q=80&w=1390&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-//   },
-//   {
-//     id: nanoid(),
-//     url: 'https://images.unsplash.com/photo-1598214886806-c87b84b7078b?q=80&w=1450&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-//   },
-//   {
-//     id: nanoid(),
-//     url: 'https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-//   },
-// ];
-
-{
-  /* Video Post UI */
-}
-{
-  /* <View style={styles.postContainer}>
-  <PostHeader /> */
-}
-{
-  /* Post Video Content */
-}
-
-{
-  /* <View style={styles.postImageContainer}>
-   <Video
-     ref={video}
-     // style={styles.video}
-     source={{
-       uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
-     }}
-     useNativeControls
-     resizeMode={ResizeMode.CONTAIN}
-     isLooping
-     onPlaybackStatusUpdate={(status) => setStatus(() => status)}
-     style={styles.postVideo}
-   />
- </View> */
-}
-
-{
-  /* Post Footer Image Post */
-}
-{
-  /* <View style={styles.postFooter}>
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <IconButton
-        icon={isPostLiked ? 'heart' : 'heart-outline'}
-        iconColor={isPostLiked ? '#FD1D1D' : '#262626'}
-        onPress={handleLike}
-        style={{ marginLeft: 3 }}
-      />
-
-      <IconButton
-        icon={() => <Feather name='message-circle' size={24} />}
-        onPress={handleComment}
-        style={{ margin: 0 }}
-      />
-
-      <IconButton
-        icon={() => <Feather name='send' size={24} />}
-        iconColor={isPostShared ? '#0000001a' : '#262626'}
-        onPress={handleShare}
-        style={{ margin: 0 }}
-      />
-    </View>
-    <View>
-      <IconButton
-        icon={
-          isPostSaved
-            ? () => <FontAwesome name='bookmark' size={24} />
-            : () => <FontAwesome name='bookmark-o' size={24} />
-        }
-        onPress={savedPost}
-      />
-    </View>
-  </View>
-</View>; */
-}
-
-{
-  /* /* Post Video Content End */
-}

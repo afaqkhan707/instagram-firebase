@@ -1,10 +1,20 @@
+import { deleteDoc, doc } from 'firebase/firestore';
 import * as React from 'react';
 import { View } from 'react-native';
 import { Avatar, IconButton, Text } from 'react-native-paper';
+import { firestoreDb } from '../../firebase/firebaseConf';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Menu, Divider } from 'react-native-paper';
 
-const PostHeader = ({ PostBy, postLocation }) => {
-  const url =
-    'https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+const PostHeader = ({ PostBy, postData }) => {
+  const deletePost = async () => {
+    await deleteDoc(doc(firestoreDb, 'posts', postId));
+    console.log('deleted');
+  };
+
+  const [visible, setVisible] = React.useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
 
   return (
     <View
@@ -22,15 +32,50 @@ const PostHeader = ({ PostBy, postLocation }) => {
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Avatar.Image size={44} source={{ uri: PostBy?.proImgLink }} />
         <View style={{ paddingLeft: 10 }}>
-          <Text style={{ color: '#262626' }}>{PostBy?.username}</Text>
-          <Text style={{ color: '#262626' }}>{postLocation.address}</Text>
+          <Text style={{ color: '#000000', fontWeight: '700', lineHeight: 20 }}>
+            {PostBy?.username}
+          </Text>
+          <Text
+            style={{
+              // color: '#262626',
+              color: 'grey',
+              fontWeight: '300',
+              lineHeight: 20,
+              fontSize: 12,
+            }}
+          >
+            {postData.address}
+          </Text>
         </View>
       </View>
-      <IconButton
-        icon='dots-vertical'
-        iconColor='#262626'
-        onPress={() => console.log('dots')}
-      />
+
+      <Menu
+        visible={visible}
+        onDismiss={closeMenu}
+        contentStyle={{
+          backgroundColor: '#fff',
+          padding: 0,
+          top: 88,
+          right: -7,
+        }}
+        statusBarHeight={0}
+        anchor={
+          <IconButton
+            icon='dots-vertical'
+            iconColor='#262626'
+            onPress={openMenu}
+          />
+        }
+      >
+        <Menu.Item icon='delete-outline' onPress={() => {}} title='Delete' />
+        <Divider />
+        <Menu.Item
+          title='Edit Post'
+          icon='pencil'
+          statusBarHeight={10}
+          onPress={() => {}}
+        />
+      </Menu>
     </View>
   );
 };

@@ -25,9 +25,9 @@ const HomeTab = () => {
     dispatch(getAllUsers(userId));
   }, [userId]);
 
-  // React.useEffect(() => {
-  //   dispatch(getPosts(userId));
-  // }, []);
+  React.useEffect(() => {
+    dispatch(getPosts(userId));
+  }, []);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
