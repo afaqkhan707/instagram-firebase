@@ -7,7 +7,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { firestoreDb, storage } from '../../firebase/firebaseConf';
 import { nanoid } from '@reduxjs/toolkit';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { setUpdateProImg } from '../../redux/slices/authSlice';
+import { setIsLoading, setUpdateProImg } from '../../redux/slices/authSlice';
 
 const StatusBarUsers = () => {
   const loadingUser = useSelector((state) => state.auth.isLoading);
@@ -15,6 +15,7 @@ const StatusBarUsers = () => {
   const userId = useSelector((state) => state.auth.currentUser?.userId);
   const dispatch = useDispatch();
   const uploadUserProfilePhoto = async (uri) => {
+    dispatch(setIsLoading(true));
     if (!uri) return;
     try {
       const resp = await fetch(uri);
@@ -27,13 +28,22 @@ const StatusBarUsers = () => {
       dispatch(setUpdateProImg(downloadURL));
     } catch (error) {
       console.error('Error uploading user profile photo:', error);
+      dispatch(setIsLoading(false));
       throw error;
+    } finally {
+      dispatch(setIsLoading(false));
     }
   };
 
   const profileImage = async () => {
     const response = await launchLibraryImages();
-    await uploadUserProfilePhoto(response?.uri);
+    try {
+      await uploadUserProfilePhoto(response?.uri);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      dispatch(setIsLoading(false));
+    }
   };
   const activeUser = useSelector((state) => state.auth?.currentUser);
 
@@ -51,16 +61,6 @@ const StatusBarUsers = () => {
         onPress={profileImage}
         isLoading={loadingUser}
       />
-      {/* {otherUsers &&
-        otherUsers.map((users) => (
-          <StatusUser
-            key={users?.userId}
-            userImage={users?.proImgLink}
-            userName={users?.username}
-            size={64}
-          />
-        ))} */}
-
       <FlatList
         data={otherUsers}
         contentContainerStyle={{ flexDirection: 'row', gap: 10 }}

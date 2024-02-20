@@ -5,6 +5,7 @@ import { Avatar, IconButton, Text } from 'react-native-paper';
 import { firestoreDb } from '../../firebase/firebaseConf';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Menu, Divider } from 'react-native-paper';
+import PostBottomSheet from './PostBottomSheet';
 
 const PostHeader = ({ PostBy, postData }) => {
   const deletePost = async () => {
@@ -21,12 +22,13 @@ const PostHeader = ({ PostBy, postData }) => {
       style={{
         maxHeight: 54,
         paddingLeft: 20,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexDirection: 'row',
         borderBottomWidth: 1,
         borderColor: '#0000001a',
         flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '150%',
       }}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -48,34 +50,7 @@ const PostHeader = ({ PostBy, postData }) => {
           </Text>
         </View>
       </View>
-
-      <Menu
-        visible={visible}
-        onDismiss={closeMenu}
-        contentStyle={{
-          backgroundColor: '#fff',
-          padding: 0,
-          top: 88,
-          right: -7,
-        }}
-        statusBarHeight={0}
-        anchor={
-          <IconButton
-            icon='dots-vertical'
-            iconColor='#262626'
-            onPress={openMenu}
-          />
-        }
-      >
-        <Menu.Item icon='delete-outline' onPress={() => {}} title='Delete' />
-        <Divider />
-        <Menu.Item
-          title='Edit Post'
-          icon='pencil'
-          statusBarHeight={10}
-          onPress={() => {}}
-        />
-      </Menu>
+      <PostBottomSheet postId={postData.id} />
     </View>
   );
 };

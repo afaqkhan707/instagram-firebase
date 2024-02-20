@@ -21,7 +21,6 @@ const authSlice = createSlice({
     },
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
-      console.log(action.payload, 'isLoading');
     },
     setUpdateProImg: (state, action) => {
       state.currentUser.proImgLink = action.payload;

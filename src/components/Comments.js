@@ -1,12 +1,4 @@
-import {
-  collection,
-  doc,
-  query,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import {
   View,
@@ -19,85 +11,94 @@ import {
 import { Avatar, Divider, IconButton } from 'react-native-paper';
 import { firestoreDb } from '../firebase/firebaseConf';
 import { nanoid } from '@reduxjs/toolkit';
+import { setCommentState } from '../redux/slices/postSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CommentSection = ({ postData, creatorInfoData }) => {
   const [commentContent, setCommentContent] = useState('');
   const [isCommentLiked, setIsCommentLiked] = useState(false);
+  const [sendingComment, setSendingComment] = useState(false);
 
-  console.log(creatorInfoData.userId, 'userId');
-  const handleSubmitComment = async () => {
-    if (commentContent.trim() !== '') {
-      try {
-        const updateDocRef = doc(firestoreDb, 'posts', postData.id);
-        console.log(creatorInfoData?.proImgLink, 'juuuu');
-        const newComment = {
-          commentId: nanoid(),
-          commentValue: commentContent,
-          // createdAt: new Date().toISOString(),
-          createdAt: serverTimestamp(),
-          userId: creatorInfoData?.userId,
-        };
+  const activeUser = useSelector((state) => state.auth?.currentUser);
+  console.log(activeUser, 'dara');
+  const dispatch = useDispatch();
+  const handleSubmitComment = async (postData, commentContent) => {
+    if (commentContent.trim() === '') return;
+    setSendingComment(true);
+    try {
+      const updateDocRef = doc(firestoreDb, 'posts', postData.id);
+      const newComment = {
+        commentId: nanoid(),
+        commentValue: commentContent,
+        createdAt: new Date().toISOString(),
+        commenterUserId: activeUser?.userId,
+        proImgLink: activeUser?.proImgLink,
+        username: activeUser?.username,
+        commentLikes: 0,
+      };
+      if (newComment) {
         await updateDoc(updateDocRef, {
           comments: arrayUnion(newComment),
         });
+        dispatch(setCommentState({ id: postData.id, comment: newComment }));
         setCommentContent('');
-      } catch (error) {
-        console.log(error.code);
+        setSendingComment(false);
       }
+    } catch (error) {
+      console.log(error.code);
+      console.log(error.code, '');
+      setSendingComment(false);
     }
   };
 
-  const getCommentUser = () => {};
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={{ fontSize: 13 }}>Comments</Text>
       </View>
       <Divider />
-      <View
-        style={{
-          minHeight: 70,
-          backgroundColor: '#fff',
-          justifyContent: 'space-between',
-          flexDirection: 'row',
-          paddingHorizontal: 14,
-          alignItems: 'center',
-        }}
-      >
-        <Avatar.Image
-          size={40}
-          source={{
-            uri: 'https://unsplash.com/photos/person-in-black-pants-and-black-sneakers-sitting-on-top-of-building-during-daytime-dL8xHCtVOg0',
-          }}
-        />
-        <View style={{ flexDirection: 'column', flex: 1, paddingLeft: 20 }}>
-          <View
-            style={{
-              flexDirection: 'row',
-            }}
-          >
-            <Text>{creatorInfoData?.username}</Text>
-            <Text> 3d</Text>
-          </View>
-          <View>
-            <Text>Comments Details</Text>
-          </View>
-        </View>
-        <IconButton
-          icon={isCommentLiked ? 'heart' : 'heart-outline'}
-          onPress={() => {
-            setIsCommentLiked(!isCommentLiked);
-          }}
-          iconColor={isCommentLiked ? '#FD1D1D' : '#a3a3a3a3'}
-        />
-      </View>
-      <Divider />
       <FlatList
         data={postData.comments}
+        showsVerticalScrollIndicator
         renderItem={({ item }) => (
-          <View style={styles.commentItem}>
-            <Text style={styles.commentText}>{item.commentValue}</Text>
-          </View>
+          <>
+            <View
+              style={{
+                minHeight: 70,
+                backgroundColor: '#fff',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                paddingHorizontal: 14,
+                alignItems: 'center',
+              }}
+            >
+              <Avatar.Image
+                size={40}
+                source={{
+                  uri: item?.proImgLink,
+                }}
+              />
+              <View
+                style={{ flexDirection: 'column', flex: 1, paddingLeft: 20 }}
+              >
+                <View style={{ flexDirection: 'row' }}>
+                  <Text>{item.username}</Text>
+                  <Text> 3d</Text>
+                </View>
+                <View>
+                  <Text>{item?.commentValue}</Text>
+                </View>
+              </View>
+              <IconButton
+                icon={isCommentLiked ? 'heart' : 'heart-outline'}
+                onPress={() => {
+                  setIsCommentLiked(!isCommentLiked);
+                }}
+                iconColor={isCommentLiked ? '#FD1D1D' : '#a3a3a3a3'}
+              />
+            </View>
+            <Divider />
+          </>
         )}
         contentContainerStyle={styles.commentList}
         keyExtractor={(item) => item.commentId}
@@ -106,7 +107,7 @@ const CommentSection = ({ postData, creatorInfoData }) => {
         <Avatar.Image
           size={40}
           source={{
-            uri: creatorInfoData?.proImgLink,
+            uri: activeUser?.proImgLink,
           }}
           style={{ marginLeft: 10 }}
         />
@@ -118,22 +119,14 @@ const CommentSection = ({ postData, creatorInfoData }) => {
           placeholder='Add a  comment...'
           // onSubmitEditing={handleSubmitComment}
         />
-        <IconButton
-          // icon={() => (
-          //   <MaterialCommunityIcons
-          //     name='file-gif-box'
-          //     size={24}
-          //     color='black'
-          //   />
-          // )}
-          icon='file-gif-box'
-          // onPress={addNewComment}
-          // onPress={addComment}
-        />
+        <IconButton icon='file-gif-box' onPress={() => {}} />
         <IconButton
           icon='send'
-          onPress={handleSubmitComment}
+          onPress={() =>
+            handleSubmitComment(postData, commentContent, creatorInfoData)
+          }
           iconColor='#3797EF'
+          loading={sendingComment}
         />
       </View>
     </SafeAreaView>

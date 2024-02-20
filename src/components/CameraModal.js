@@ -41,22 +41,10 @@ const CameraModal = ({
       await Promise.all(uploadTasks);
       const data = {
         postImage: uploadTasks,
-        comments: [
-          {
-            commentId: nanoid(),
-            commentValue: 'commentContent',
-            createdAt: new Date().toISOString(),
-            userId: 'abc',
-          },
-          {
-            commentId: nanoid(),
-            commentValue: 'commentContent',
-            createdAt: new Date().toISOString(),
-            userId: 'vbc',
-          },
-        ],
+        comments: [],
         fileType: 'images',
         likes: 0,
+        
         userId,
         address: location,
         description: description,

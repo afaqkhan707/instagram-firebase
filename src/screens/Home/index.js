@@ -8,6 +8,7 @@ import StatusUser from '../../components/StatusUser';
 import { getAllUsers, getPosts } from '../../redux/services/firebaseActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text } from 'react-native-paper';
+import UserProfileCards from './UserProfileCards';
 const HomeTab = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [postContent, setPostContent] = React.useState([]);
@@ -35,6 +36,9 @@ const HomeTab = () => {
       setRefreshing(false);
     }, 2000);
     dispatch(getPosts(userId));
+    // const respo = dispatch(getPosts(userId));
+
+    // return () => respo();
   }, []);
   return (
     <>
@@ -59,6 +63,7 @@ const HomeTab = () => {
           setModalVisible={setModalVisible}
         />
         <StatusBarUsers />
+        <UserProfileCards />
         {posts &&
           posts.map((item) => {
             return <Post key={item.id} postData={item} />;

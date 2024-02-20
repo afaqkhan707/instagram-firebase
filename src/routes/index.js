@@ -12,6 +12,7 @@ import { collection, doc, getDoc } from 'firebase/firestore';
 import { auth, firestoreDb } from '../firebase/firebaseConf';
 import LoaderPage from '../components/Loader';
 import { setIsLoading } from '../redux/slices/authSlice';
+import CameraGalleryModal from '../screens/CameraGalleryModal/CameraGalleryModal';
 // import { CheckActiveUser } from '../redux/services/firebaseActions';
 
 const Stack = createNativeStackNavigator();
@@ -68,7 +69,9 @@ const MyStack = () => {
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={isLogged ? 'dashboard' : 'login'}>
+        <Stack.Navigator
+          initialRouteName={isLogged ? 'dashboard' : 'dashboard'}
+        >
           <Stack.Screen
             name='login'
             component={Login}
@@ -87,6 +90,11 @@ const MyStack = () => {
           <Stack.Screen
             name='camera'
             component={CameraModalScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='contentmodal'
+            component={CameraGalleryModal}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

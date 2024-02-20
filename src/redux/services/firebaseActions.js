@@ -34,6 +34,9 @@ export const registerUser =
         username: values.username,
         email: values.email,
         userId,
+        followers: [],
+        following: [],
+        createdAt: new Date().toISOString(),
       };
       window.navigator.userAgent = 'ReactNative';
       await setDoc(doc(firestoreDb, 'users', userId), newUserData);
@@ -198,3 +201,40 @@ export const getPosts = () => async (dispatch) => {
   } finally {
   }
 };
+
+// export const getPosts = () => async (dispatch) => {
+//   try {
+//     const unsubscribe = onSnapshot(
+//       collection(firestoreDb, 'posts'),
+//       (snapshot) => {
+//         // Handle document changes efficiently
+//         snapshot.docChanges().forEach((change) => {
+//           const { doc } = change;
+//           const updatedPost = { ...doc.data(), id: doc.id };
+//           console.log(change, 'cahnges');
+//           // Update state based on change type
+//           switch (change.type) {
+//             case 'added':
+//               // Add the new post to the beginning or specific position
+//               dispatch(addPost(updatedPost));
+//               break;
+//             case 'modified':
+//               // Find the existing post and update its properties
+//               dispatch(updatePost(updatedPost.id, updatedPost));
+//               break;
+//             case 'removed':
+//               // Remove the deleted post from state
+//               dispatch(removePost(updatedPost.id));
+//               break;
+//             default:
+//               console.error('Unexpected change type:', change.type);
+//           }
+//         });
+//       }
+//     );
+//     return unsubscribe;
+//   } catch (error) {
+//     dispatch(setPostError(error.message));
+//   } finally {
+//   }
+// };

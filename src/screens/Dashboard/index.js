@@ -1,15 +1,16 @@
 import * as React from 'react';
-import { BottomNavigation, Text, StatusBar } from 'react-native-paper';
+import { BottomNavigation, Text, StatusBar, Avatar } from 'react-native-paper';
 import SerachTab from '../Search';
 import HomeTab from '../Home';
 import AddTab from '../Add';
 import Setting from '../Settings';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAllUsers } from '../../redux/services/firebaseActions';
+import { View } from 'react-native';
 const Dashboard = () => {
   const [index, setIndex] = React.useState(0);
   const dispatch = useDispatch();
-
+  const loggedUser = useSelector((state) => state.auth.currentUser);
   const [routes] = React.useState([
     {
       key: 'home',
@@ -28,24 +29,40 @@ const Dashboard = () => {
     },
     { key: 'heart', focusedIcon: 'heart', unfocusedIcon: 'heart-outline' },
     {
-      key: 'account',
-      focusedIcon: 'account-circle-outline',
+      key: 'profile',
+      // focusedIcon: () => (
+      //   <View
+      //     style={{
+      //       padding: 0.5,
+      //       borderRadius: 50,
+      //       borderWidth: 1,
+      //       borderColor: '#EE2A7B',
+      //     }}
+      //   >
+      //     <Avatar.Image source={{ uri: loggedUser?.proImgLink }} size={25} />
+      //   </View>
+      // ),
+      focusedIcon: () => (
+        <Avatar.Image source={{ uri: loggedUser?.proImgLink }} size={25} />
+      ),
+      unfocusedIcon: () => (
+        <Avatar.Image source={{ uri: loggedUser?.proImgLink }} size={25} />
+      ),
     },
   ]);
   const HomeRoute = () => <HomeTab />;
   const SearchRoute = () => <SerachTab />;
   const AddRoute = () => <AddTab />;
   const NotificationsRoute = () => <Text>Notifications</Text>;
-  const Heart = () => <Setting />;
+  const ProfileRoute = () => <Setting />;
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
     search: SearchRoute,
     plus: AddRoute,
     heart: NotificationsRoute,
-    account: Heart,
+    profile: ProfileRoute,
   });
-
 
   return (
     <>

@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { Appbar } from 'react-native-paper';
 import { Image, StyleSheet, View } from 'react-native';
-import SvgLogos from './Svgs';
+import SvgLogos from './Svgs/Svgs';
 import IgnSvg from './Svgs/IgnSvg';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
