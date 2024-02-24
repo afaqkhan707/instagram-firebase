@@ -31,8 +31,10 @@ export const registerUser =
       const userId = resp?.user?.uid;
       console.log(userId);
       const newUserData = {
+        displayName: '',
         username: values.username,
         email: values.email,
+        gender: '',
         userId,
         followers: [],
         following: [],
@@ -64,7 +66,6 @@ export const loginUser =
         values.password
       );
       const userId = resp?.user?.uid;
-      // window.navigator.userAgent = 'ReactNative';
       const userDoc = await getDoc(doc(firestoreDb, 'users', userId));
       const currentUserData = userDoc.data();
       console.log(currentUserData);

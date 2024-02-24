@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import PostHeader from './PostHeader';
-import { IconButton } from 'react-native-paper';
+import { Divider, IconButton } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 // import { useSelector } from 'react-redux';
@@ -49,6 +49,7 @@ const Post = ({ postData }) => {
   return (
     <>
       {/* Post Content */}
+      <Divider />
       <View style={styles.postContainer}>
         <PostHeader PostBy={creatorInfo} postData={postData} />
         {postData.postImage && postData.postImage.length > 0 && (
@@ -58,27 +59,13 @@ const Post = ({ postData }) => {
             data={postData?.postImage}
             width={370}
             scrollAnimationDuration={500}
-            onSnapToItem={(index) => console.log('current index:', index)}
-            renderItem={({ item, index }) => (
-              <>
-                <Image source={{ uri: item }} style={styles.postImage} />
-                <View
-                  style={{
-                    flex: 1,
-                    borderWidth: 1,
-                    borderBottomColor: '#000000',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Text style={{ textAlign: 'center', fontSize: 30 }}>
-                    {index}Index
-                  </Text>
-                </View>
-              </>
+            renderItem={({ item }) => (
+              <Image source={{ uri: item }} style={styles.postImage} />
             )}
           />
         )}
       </View>
+      <Divider />
       {/* Post Footer Image Post */}
       <View style={styles.postFooter}>
         <View
@@ -140,6 +127,7 @@ const Post = ({ postData }) => {
           <Text style={{ color: '#000000' }}>7 days Ago</Text>
         </View>
       </View>
+      <Divider />
       {/* Post Content */}
     </>
   );
@@ -150,29 +138,24 @@ export default Post;
 const styles = StyleSheet.create({
   postContainer: {
     backgroundColor: '#fff',
-    height: 'auto',
-    borderColor: '#0000001a',
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
+    // height: 'auto',
     flex: 1,
   },
   postImageContainer: {
-    minHeight: 400,
+    minHeight: 353,
     width: '100%',
   },
   postImage: {
-    // minHeight: 375,
+    width: '100%',
     height: '100%',
   },
   postVideo: {
     width: '100%',
-    minHeight: 'auto',
+    minHeight: 500,
   },
   postFooter: {
-    // flexDirection: 'column',
-    // justifyContent: 'center',
     minHeight: 60,
-    backgroundColor: 'pink',
+    backgroundColor: '#fff',
     paddingLeft: 16,
     paddingBottom: 8,
   },

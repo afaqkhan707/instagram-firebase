@@ -44,7 +44,7 @@ const CameraModal = ({
         comments: [],
         fileType: 'images',
         likes: 0,
-        
+
         userId,
         address: location,
         description: description,
@@ -80,7 +80,11 @@ const CameraModal = ({
   };
   const openCamera = async () => {
     const respContent = await launchCamera();
-    await setContentData(respContent);
+    if (respContent === undefined) {
+      navigation.goBack();
+      return;
+    }
+    // await setContentData(respContent);
   };
   const NextModal = () => {
     setSetupUp(setupUp + 1);

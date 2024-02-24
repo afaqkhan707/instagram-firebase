@@ -8,11 +8,12 @@ import CameraModalScreen from '../screens/Camera';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUser } from '../redux/slices/authSlice';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { auth, firestoreDb } from '../firebase/firebaseConf';
 import LoaderPage from '../components/Loader';
 import { setIsLoading } from '../redux/slices/authSlice';
 import CameraGalleryModal from '../screens/CameraGalleryModal/CameraGalleryModal';
+import ProfileScreen from '../screens/Settings';
 // import { CheckActiveUser } from '../redux/services/firebaseActions';
 
 const Stack = createNativeStackNavigator();
@@ -54,7 +55,7 @@ const MyStack = () => {
   //   console.log(isLogged, 'false');
   //   console.log(isLogged, 'true');
   // }, [!isLogged]);
-
+  const loggedUser = useSelector((state) => state.auth?.currentUser);
   useEffect(() => {
     const checkUser = async () => {
       await CheckActiveUser();
@@ -65,6 +66,20 @@ const MyStack = () => {
   useEffect(() => {
     console.log(isLogged ? 'true' : 'false');
   }, [isLogged]);
+
+  const authUserUpdate = async (user) => {
+    if (!user) return;
+    const userDocRef = doc(firestoreDb, 'users', user.userId);
+    const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
+      const updatedDetails = docSnapshot.data();
+      dispatch(setCurrentUser({ currentActiveUser: updatedDetails }));
+    });
+    return unsubscribe;
+  };
+
+  useEffect(() => {
+    authUserUpdate(loggedUser);
+  }, []);
 
   return (
     <>

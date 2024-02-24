@@ -6,12 +6,14 @@ import UserPostData from './UserPostData';
 import { useNavigation } from '@react-navigation/native';
 
 const ProfileInfo = () => {
-  const loggedUser = useSelector((state) => state.auth.currentUser);
+  const loggedUser = useSelector((state) => state.auth?.currentUser);
+  const totalPost = useSelector((state) => state.post.posts?.length);
   const userPostData = [
-    { id: 1, title: 'posts', value: 1 },
-    { id: 2, title: 'followers', value: 14 },
-    { id: 3, title: 'following', value: 8 },
+    { id: 1, title: 'posts', value: totalPost },
+    { id: 2, title: 'followers', value: loggedUser?.followers?.length },
+    { id: 3, title: 'following', value: loggedUser?.following?.length },
   ];
+
   const navigation = useNavigation();
   const openDeviceMedia = () => {
     navigation.navigate('contentmodal');
@@ -48,7 +50,7 @@ const ProfileInfo = () => {
           {loggedUser?.username}
         </Text>
 
-        <Text style={{ fontSize: 12, color: '#333' }}>Its All Locked...</Text>
+        <Text style={{ fontSize: 12, color: '#333' }}>{loggedUser?.bio}</Text>
       </View>
       <View
         style={{

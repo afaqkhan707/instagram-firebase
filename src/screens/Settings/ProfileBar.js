@@ -7,7 +7,10 @@ const ProfileBar = () => {
   const loggedUser = useSelector((state) => state.auth?.currentUser);
   return (
     <Appbar.Header
-      titleStyle={{ alignItems: 'center', justifyContent: 'space-between' }}
+      titleStyle={{
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}
     >
       <View
         style={{
@@ -15,6 +18,7 @@ const ProfileBar = () => {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'flex-start',
+          backgroundColor: '#fff',
         }}
       >
         <Appbar.Action
@@ -25,7 +29,6 @@ const ProfileBar = () => {
         <Appbar.Content
           icon='lock'
           title={loggedUser?.username}
-          // title='afaqkhan707'
           titleStyle={{
             color: '#000000',
             fontWeight: 'bold',

@@ -19,18 +19,3 @@ const randomUsers = createSlice({
 
 export const { setRandomUsers, setError } = randomUsers.actions;
 export default randomUsers.reducer;
-// extraReducers: (builder) => {
-//     builder
-//       .addCase(getAllUsers.pending, (state) => {
-//         state.loading = true;
-//         state.error = null; // Clear previous error
-//       })
-//       .addCase(getAllUsers.fulfilled, (state, action) => {
-//         state.loading = false;
-//         state.allUsers = action.payload; // Update only if there's data
-//       })
-//       .addCase(getAllUsers.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.error.message;
-//       });
-//   },

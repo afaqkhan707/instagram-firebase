@@ -45,7 +45,7 @@ export default function CommentBottomSheet({ createdBy, postData }) {
         closeOnPressMask={false}
         customStyles={{
           wrapper: {
-            backgroundColor: 'rgba(0,0,0,0.7)',
+            backgroundColor: 'rgba(0,0,0,0.8)',
           },
           draggableIcon: {
             backgroundColor: '#777777',

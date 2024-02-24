@@ -64,13 +64,17 @@ const CameraGalleryModal = () => {
   return (
     <>
       <Appbar.Header style={styles.appbar}>
-        <Appbar.Action icon='arrow-left' onPress={handleGoBack} />
+        <Appbar.Action
+          icon='arrow-left'
+          onPress={handleGoBack}
+          iconColor='#fff'
+        />
       </Appbar.Header>
       <View style={styles.container}>
         {!selectedImage && (
           <>
             <Text style={styles.infoText}>
-              Choose Image From Device or Capture
+              Choose Library or Capture to Status
             </Text>
             <View style={styles.buttonContainer}>
               <Button
@@ -125,7 +129,7 @@ export default CameraGalleryModal;
 
 const styles = StyleSheet.create({
   appbar: {
-    backgroundColor: '#333',
+    backgroundColor: '#1e272e',
   },
   container: {
     flex: 1,
@@ -143,10 +147,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    padding: 8,
-    marginHorizontal: 8,
-    borderRadius: 8,
-    width: 150,
+    marginHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 6,
+    width: '40%',
   },
   libraryButton: {
     backgroundColor: '#3498db',

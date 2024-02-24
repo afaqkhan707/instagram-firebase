@@ -63,7 +63,7 @@ const HomeTab = () => {
           setModalVisible={setModalVisible}
         />
         <StatusBarUsers />
-        <UserProfileCards />
+        {/* <UserProfileCards /> */}
         {posts &&
           posts.map((item) => {
             return <Post key={item.id} postData={item} />;
