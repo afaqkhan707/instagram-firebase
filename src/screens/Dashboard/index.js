@@ -81,10 +81,10 @@
 // };
 
 // export default Dashboard;
+
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-
 import SerachTab from '../Search';
 import HomeTab from '../Home';
 import AddTab from '../Add';
@@ -127,3 +127,15 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+// const loggedUser = useSelector((state) => state.auth.currentUser);
+
+{
+  /* <Tab.Screen
+        name='Profile'
+        // component={ProfileScreen}
+        // initialParams={{ userId: loggedUser?.userId }}
+      >
+        {() => <ProfileScreen active={loggedUser?.userId} />}
+      </Tab.Screen> */
+}

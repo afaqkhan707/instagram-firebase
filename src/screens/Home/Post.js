@@ -37,7 +37,6 @@ const Post = ({ postData }) => {
       userRef = doc(firestoreDb, 'users', postData.userId);
       user = await getDoc(userRef);
       await setCreatorInfo(user.data());
-      // console.log(user.data().userId, 'postUser');
     } catch (error) {
       console.log(error, 'postUser');
     }
@@ -45,7 +44,6 @@ const Post = ({ postData }) => {
   useEffect(() => {
     getPostUser();
   }, []);
-  // console.log(postData.id, 'postId');
   return (
     <>
       {/* Post Content */}

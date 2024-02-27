@@ -6,7 +6,7 @@ export const launchCamera = async () => {
     quality: 0.8,
   });
   if (result.canceled) {
-    result = [];
+    return;
   }
   return result.assets[0];
 };

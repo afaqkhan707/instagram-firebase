@@ -4,7 +4,12 @@ import {
   signOut,
   signInWithPopup,
 } from 'firebase/auth';
-import { auth, firestoreDb, googleProvider } from '../../firebase/firebaseConf';
+import {
+  auth,
+  firestoreDb,
+  googleProvider,
+  storage,
+} from '../../firebase/firebaseConf';
 import {
   doc,
   setDoc,
@@ -18,6 +23,7 @@ import { setCurrentUser } from '../slices/authSlice';
 import { setRandomUsers, setError } from '../slices/otherUsersSlice';
 import { setPost, setPostError } from '../slices/postSlice';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { nanoid } from '@reduxjs/toolkit';
 
 // Handle NewUser Signup
 export const registerUser =
@@ -203,39 +209,18 @@ export const getPosts = () => async (dispatch) => {
   }
 };
 
-// export const getPosts = () => async (dispatch) => {
-//   try {
-//     const unsubscribe = onSnapshot(
-//       collection(firestoreDb, 'posts'),
-//       (snapshot) => {
-//         // Handle document changes efficiently
-//         snapshot.docChanges().forEach((change) => {
-//           const { doc } = change;
-//           const updatedPost = { ...doc.data(), id: doc.id };
-//           console.log(change, 'cahnges');
-//           // Update state based on change type
-//           switch (change.type) {
-//             case 'added':
-//               // Add the new post to the beginning or specific position
-//               dispatch(addPost(updatedPost));
-//               break;
-//             case 'modified':
-//               // Find the existing post and update its properties
-//               dispatch(updatePost(updatedPost.id, updatedPost));
-//               break;
-//             case 'removed':
-//               // Remove the deleted post from state
-//               dispatch(removePost(updatedPost.id));
-//               break;
-//             default:
-//               console.error('Unexpected change type:', change.type);
-//           }
-//         });
-//       }
-//     );
-//     return unsubscribe;
-//   } catch (error) {
-//     dispatch(setPostError(error.message));
-//   } finally {
-//   }
-// };
+export const uploadImage = (uri) => async (dispatch) => {
+  try {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const storageRef = ref(storage, 'post_media_files/');
+    const filename = `${Date.now()}-${nanoid()}`;
+    const imageRef = ref(storageRef, filename);
+    await uploadBytes(imageRef, blob);
+    const downloadURL = await getDownloadURL(imageRef);
+    return downloadURL;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    throw error;
+  }
+};

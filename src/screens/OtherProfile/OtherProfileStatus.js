@@ -1,31 +1,18 @@
-import { Alert, Share, StyleSheet, View } from 'react-native';
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
-import EditProfileModal from './EditProfileModal';
 import { useSelector } from 'react-redux';
 
-const EditProfile = () => {
+const OtherProfileStatus = ({ postAuthor }) => {
   const loggedUser = useSelector((state) => state.auth?.currentUser);
-
-  const onShare = async () => {
-    try {
-      const message = `Name : ${loggedUser.username}\nEmail : ${loggedUser.email}`;
-
-      const result = await Share.share({
-        message: message,
-      });
-
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-        } else {
-        }
-      } else if (result.action === Share.dismissedAction) {
+  const [isFollowed, setIsFollowed] = React.useState(false);
+  if (loggedUser) {
+    loggedUser.followers.map((follower) => {
+      if (follower.userId === postAuthor.userId) {
+        setIsFollowed(true);
       }
-    } catch (error) {
-      Alert.alert(error.message);
-    }
-  };
-
+    });
+  }
   return (
     <View
       style={{
@@ -34,23 +21,35 @@ const EditProfile = () => {
         alignItems: 'center',
       }}
     >
-      <EditProfileModal />
       <Button
         mode='contained-tonal'
-        textColor='#000'
-        buttonColor={'#f3f3f3'}
-        onPress={onShare}
+        textColor={isFollowed ? '#000' : '#fff'}
+        buttonColor={isFollowed ? '#f3f3f3' : '#3797EF'}
+        onPress={() => setIsFollowed(!isFollowed)}
         style={styles.editButton}
         labelStyle={{
           paddingHorizontal: 10,
           marginVertical: 7,
         }}
       >
-        Share profile
+        {isFollowed ? 'Follow' : 'Following'}
+      </Button>
+
+      <Button
+        mode='contained-tonal'
+        textColor='#000'
+        buttonColor={'#f3f3f3'}
+        onPress={() => {}}
+        style={styles.editButton}
+        labelStyle={{
+          paddingHorizontal: 10,
+          marginVertical: 7,
+        }}
+      >
+        Message
       </Button>
       <IconButton
         icon={'account-plus'}
-        iconColor={'#000'}
         containerColor='#f3f3f3'
         onPress={() => {}}
         style={styles.editButton}
@@ -60,7 +59,7 @@ const EditProfile = () => {
   );
 };
 
-export default EditProfile;
+export default OtherProfileStatus;
 
 const styles = StyleSheet.create({
   editButton: {

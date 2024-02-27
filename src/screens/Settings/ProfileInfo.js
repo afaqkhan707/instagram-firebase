@@ -5,11 +5,16 @@ import { useSelector } from 'react-redux';
 import UserPostData from './UserPostData';
 import { useNavigation } from '@react-navigation/native';
 
-const ProfileInfo = () => {
+const ProfileInfo = ({ myAllPosts }) => {
   const loggedUser = useSelector((state) => state.auth?.currentUser);
-  const totalPost = useSelector((state) => state.post.posts?.length);
+
+  // const totalPost = useSelector((state) => state.post?.posts);
+
+  // const myPost = totalPost?.filter(
+  //   (post) => post.userId === loggedUser?.userId
+  // );
   const userPostData = [
-    { id: 1, title: 'posts', value: totalPost },
+    { id: 1, title: 'posts', value: myAllPosts },
     { id: 2, title: 'followers', value: loggedUser?.followers?.length },
     { id: 3, title: 'following', value: loggedUser?.following?.length },
   ];
@@ -22,7 +27,6 @@ const ProfileInfo = () => {
     <View
       style={{
         flexDirection: 'row',
-        alignItems: 'center',
         padding: 10,
       }}
     >
@@ -54,11 +58,14 @@ const ProfileInfo = () => {
       </View>
       <View
         style={{
-          flex: 1,
           flexDirection: 'row',
-          paddingHorizontal: 5,
+          paddingHorizontal: 24,
+          justifyContent: 'center',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          columnGap: 3,
+          paddingVertical: 1,
+          height: 100,
+          width: '78%',
         }}
       >
         {userPostData.map((data) => (

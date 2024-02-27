@@ -7,7 +7,6 @@ import CameraModal from '../../components/CameraModal';
 import StatusUser from '../../components/StatusUser';
 import { getAllUsers, getPosts } from '../../redux/services/firebaseActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { Text } from 'react-native-paper';
 import UserProfileCards from './UserProfileCards';
 const HomeTab = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -34,11 +33,8 @@ const HomeTab = () => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000);
+    }, 3000);
     dispatch(getPosts(userId));
-    // const respo = dispatch(getPosts(userId));
-
-    // return () => respo();
   }, []);
   return (
     <>
@@ -53,10 +49,13 @@ const HomeTab = () => {
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[0]}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            colors={['gray', '#0000001a', '#33333333']}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            style={{ marginTop: 60 }}
+          />
         }
-
-        // StickyHeaderComponent={HomeAppBar}
       >
         <HomeAppBar
           setContentData={setContent}
@@ -77,9 +76,6 @@ export default HomeTab;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // backgroundColor: '#fff',
+    backgroundColor: '#fff',
   },
 });

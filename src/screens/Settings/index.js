@@ -1,71 +1,62 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Logout } from '../../redux/services/firebaseActions';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
 import ProfileBar from './ProfileBar';
 import ProfileInfo from './ProfileInfo';
-import EditProfile from './EditProfile';
 import ProfileBottomBarNavigation from './ProfileBottomBarNavigation';
-import { Button } from 'react-native-paper';
+import EditProfile from './EditProfile';
+import { Divider } from 'react-native-paper';
+import {
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from 'firebase/firestore';
 import { firestoreDb } from '../../firebase/firebaseConf';
-import { doc, getDoc } from 'firebase/firestore';
-const ProfileScreen = ({ route }) => {
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
-  const LogoutActiveUser = async () => {
-    await dispatch(Logout(navigation));
-  };
-  const { userId } = route.params;
-
-  const [postAuthor, setPostAuthor] = React.useState(null);
-  const getPostAuthor = async () => {
-    if (userId === undefined || userId === null) return;
-    const docRef = doc(firestoreDb, 'users', userId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      setPostAuthor(docSnap.data());
-      console.log('Document data:', docSnap.data());
-    } else {
-      console.log('No such document!');
-    }
-  };
-  useEffect(() => {
-    getPostAuthor();
-  }, [userId]);
-  // const [isPostAuthor, setisPostAuthor] = useState(false);
-  // if (userId) {
-  //   setisPostAuthor(true);
-  // }
+import { useSelector } from 'react-redux';
+const ProfileScreen = () => {
   const loggedUser = useSelector((state) => state.auth?.currentUser);
+  const [userPosts, setUserPosts] = useState(null);
+  const [myTotalPostLength, setMyTotalPostLength] = useState(0);
+
+  useEffect(() => {
+    if (loggedUser && loggedUser?.userId) {
+      const postsRef = query(
+        collection(firestoreDb, 'posts'),
+        where('userId', '==', loggedUser?.userId)
+      );
+
+      const unsubscribe = onSnapshot(postsRef, (snapshot) => {
+        const posts = [];
+        snapshot.forEach((doc) => {
+          posts.push({ ...doc.data(), postId: doc.id });
+        });
+        setUserPosts(posts);
+        setMyTotalPostLength(posts.length);
+      });
+
+      return () => unsubscribe();
+    }
+  }, [loggedUser?.userId]);
 
   return (
-    <>
+    <View style={styles.container}>
       <ProfileBar />
-      <ProfileInfo />
+      <Divider />
+      <ProfileInfo myAllPosts={myTotalPostLength} />
+      <Divider />
       <EditProfile />
-      <ProfileBottomBarNavigation />
-      {loggedUser && (
-        <View style={styles.container}>
-          <Button
-            icon='logout'
-            onPress={LogoutActiveUser}
-            buttonColor='green'
-            textColor='#fff'
-          ></Button>
-        </View>
-      )}
-    </>
+      <Divider />
+      <ProfileBottomBarNavigation authUserPost={userPosts} />
+      <Divider />
+    </View>
   );
 };
-
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'pink',
+    backgroundColor: '#fff',
   },
 });

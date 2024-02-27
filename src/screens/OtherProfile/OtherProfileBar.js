@@ -1,12 +1,13 @@
+import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { StatusBar, View } from 'react-native';
 import { Appbar } from 'react-native-paper';
-import { useSelector } from 'react-redux';
-import ProfileBottomSheet from './BottomSheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-const ProfileBar = () => {
-  const loggedUser = useSelector((state) => state.auth?.currentUser);
+const OtherProfileBar = ({ postAuthor }) => {
+  const navigation = useNavigation();
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
   return (
     <>
       <StatusBar />
@@ -25,14 +26,10 @@ const ProfileBar = () => {
             justifyContent: 'flex-start',
           }}
         >
-          <Appbar.Action
-            icon='lock-outline'
-            size={20}
-            style={{ padding: 0, margin: 0 }}
-          />
+          <Appbar.BackAction size={20} onPress={handleBackPress} />
           <Appbar.Content
             icon='lock'
-            title={loggedUser?.username}
+            title={postAuthor?.username}
             titleStyle={{
               color: '#000000',
               fontWeight: 'bold',
@@ -50,9 +47,6 @@ const ProfileBar = () => {
           }}
         >
           <Appbar.Action icon='plus-box-outline' onPress={() => {}} />
-          {/* <GestureHandlerRootView>
-            <ProfileBottomSheet />
-          </GestureHandlerRootView> */}
           <Appbar.Action icon='menu' onPress={() => {}} />
         </View>
       </Appbar.Header>
@@ -60,4 +54,4 @@ const ProfileBar = () => {
   );
 };
 
-export default ProfileBar;
+export default OtherProfileBar;

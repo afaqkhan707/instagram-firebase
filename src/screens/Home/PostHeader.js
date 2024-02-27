@@ -15,37 +15,38 @@ const PostHeader = ({ PostBy, postData }) => {
   };
   const navigation = useNavigation();
   const handelUserInfo = () => {
-    console.log('clicked');
-    navigation.navigate('dashboard', {
-      screen: 'Profile',
-      params: { userId: PostBy?.userId },
+    console.log(PostBy?.userId, 'PostBy?.userId');
+    navigation.navigate('otherprofile', {
+      userId: PostBy?.userId,
     });
   };
-  // console.log('PostBy', PostBy?.userId);
   const [visible, setVisible] = React.useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   return (
-    <TouchableOpacity onPress={handelUserInfo}>
+    <>
+      <Divider />
       <View
         style={{
+          minHeight: 54,
           maxHeight: 54,
           paddingLeft: 20,
-          borderBottomWidth: 1,
-          borderColor: '#0000001a',
-          flex: 1,
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          width: '150%',
         }}
       >
         <View
-          style={{ flexDirection: 'row', alignItems: 'center' }}
-          onPress={handelUserInfo}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
         >
-          <Avatar.Image size={44} source={{ uri: PostBy?.proImgLink }} />
+          <TouchableOpacity onPress={handelUserInfo}>
+            <Avatar.Image size={44} source={{ uri: PostBy?.proImgLink }} />
+          </TouchableOpacity>
           <View style={{ paddingLeft: 10 }}>
             <Text
               style={{ color: '#000000', fontWeight: '700', lineHeight: 20 }}
@@ -54,7 +55,6 @@ const PostHeader = ({ PostBy, postData }) => {
             </Text>
             <Text
               style={{
-                // color: '#262626',
                 color: 'grey',
                 fontWeight: '300',
                 lineHeight: 20,
@@ -65,9 +65,12 @@ const PostHeader = ({ PostBy, postData }) => {
             </Text>
           </View>
         </View>
-        <PostBottomSheet postId={postData.id} />
+        <View>
+          <PostBottomSheet postId={postData} />
+        </View>
       </View>
-    </TouchableOpacity>
+      <Divider />
+    </>
   );
 };
 

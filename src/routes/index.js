@@ -13,7 +13,7 @@ import { auth, firestoreDb } from '../firebase/firebaseConf';
 import LoaderPage from '../components/Loader';
 import { setIsLoading } from '../redux/slices/authSlice';
 import CameraGalleryModal from '../screens/CameraGalleryModal/CameraGalleryModal';
-import ProfileScreen from '../screens/Settings';
+import OtherProfileScreen from '../screens/OtherProfile';
 // import { CheckActiveUser } from '../redux/services/firebaseActions';
 
 const Stack = createNativeStackNavigator();
@@ -110,6 +110,11 @@ const MyStack = () => {
           <Stack.Screen
             name='contentmodal'
             component={CameraGalleryModal}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='otherprofile'
+            component={OtherProfileScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

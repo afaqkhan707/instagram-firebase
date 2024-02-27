@@ -2,40 +2,48 @@ import { doc, deleteDoc } from 'firebase/firestore';
 
 import React, { useRef } from 'react';
 import { View, Dimensions, TouchableOpacity } from 'react-native';
-import { Button, IconButton } from 'react-native-paper';
+import { Button, Divider, IconButton } from 'react-native-paper';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { firestoreDb } from '../../firebase/firebaseConf';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { removePost } from '../../redux/slices/postSlice';
 
 const screenHeight = Dimensions.get('window').height;
 
-const CustomButton = ({ iconName, label, onPress }) => (
-  <Button
-    icon={iconName}
-    style={{ width: '100%' }}
-    buttonColor='#fff'
-    textColor='#3797EF'
-    rippleColor='#0000001a'
-    onPress={onPress}
-  >
-    {label}
-  </Button>
+const CustomButton = ({ iconName, label, onPress, textColor }) => (
+  <>
+    <Button
+      icon={iconName}
+      mode='contained-tonal'
+      style={{
+        borderRadius: 8,
+      }}
+      buttonColor='#fff'
+      textColor={textColor}
+      rippleColor='#0000001a'
+      onPress={onPress}
+    >
+      {label}
+    </Button>
+    <Divider />
+  </>
 );
 
 export default function PostBottomSheet({ postId }) {
+  const loggedUser = useSelector((state) => state.auth?.currentUser);
   const refRBSheet = useRef();
   const dispatch = useDispatch();
   const deletePost = async () => {
     try {
-      const deleteDocRef = doc(firestoreDb, 'posts', postId);
+      const deleteDocRef = doc(firestoreDb, 'posts', postId.id);
       await deleteDoc(deleteDocRef);
-      dispatch(removePost(postId));
+      dispatch(removePost(postId.id));
       refRBSheet.current.close();
     } catch (error) {
-      console.log('error while DeletinDOc', error.code);
+      console.log('error while Deleting Doc', error.code);
     }
   };
+  const deleteAccess = loggedUser?.userId === postId?.userId;
   return (
     <>
       <IconButton
@@ -50,7 +58,6 @@ export default function PostBottomSheet({ postId }) {
       >
         <RBSheet
           ref={refRBSheet}
-          height={screenHeight - 660}
           closeOnDragDown={true}
           closeOnPressMask={true}
           customStyles={{
@@ -70,15 +77,32 @@ export default function PostBottomSheet({ postId }) {
         >
           <View
             style={{
-              minHeight: 60,
+              paddingVertical: 1,
+              gap: 1,
               alignItems: 'center',
-              flex: 1,
+              backgroundColor: 'purple',
+              backgroundColor: '#FFF',
             }}
           >
+            {deleteAccess && (
+              <CustomButton
+                iconName='delete'
+                label='Delete Post'
+                onPress={deletePost}
+                textColor='#b30000'
+              />
+            )}
             <CustomButton
-              iconName='delete'
-              label='Delete Post'
-              onPress={deletePost}
+              iconName='pencil-box'
+              label='Edit Post'
+              textColor='#000'
+              onPress={() => {}}
+            />
+            <CustomButton
+              iconName='share'
+              label='Share Post on your account'
+              textColor='#000'
+              onPress={() => {}}
             />
           </View>
         </RBSheet>
