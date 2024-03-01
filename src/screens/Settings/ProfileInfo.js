@@ -13,16 +13,29 @@ const ProfileInfo = ({ myAllPosts }) => {
   // const myPost = totalPost?.filter(
   //   (post) => post.userId === loggedUser?.userId
   // );
+  const openDeviceMedia = () => {
+    navigation.navigate('UserFollow', {
+      ProfileUser: loggedUser,
+    });
+  };
   const userPostData = [
     { id: 1, title: 'posts', value: myAllPosts },
-    { id: 2, title: 'followers', value: loggedUser?.followers?.length },
-    { id: 3, title: 'following', value: loggedUser?.following?.length },
+    {
+      id: 2,
+      title: 'followers',
+      value: loggedUser?.followers?.length,
+      onPress: openDeviceMedia,
+    },
+    {
+      id: 3,
+      title: 'following',
+      value: loggedUser?.following?.length,
+      onPress: openDeviceMedia,
+    },
   ];
 
   const navigation = useNavigation();
-  const openDeviceMedia = () => {
-    navigation.navigate('contentmodal');
-  };
+
   return (
     <View
       style={{
@@ -37,17 +50,18 @@ const ProfileInfo = ({ myAllPosts }) => {
             source={{ uri: loggedUser?.proImgLink }}
             onProgress={() => {}}
           />
-          <IconButton
+          {/* <IconButton
             icon='plus-circle'
-            containerColor='#fff'
-            iconColor='#3797EF'
-            size={24}
+            containerColor='#3797EF'
+            iconColor='#fff'
+            size={20}
             style={{
               position: 'absolute',
               top: 27,
               left: 30,
+              padding: 2,
             }}
-          />
+          /> */}
         </TouchableOpacity>
 
         <Text style={{ fontWeight: '800', fontSize: 16 }}>
@@ -69,7 +83,12 @@ const ProfileInfo = ({ myAllPosts }) => {
         }}
       >
         {userPostData.map((data) => (
-          <UserPostData key={data.id} title={data.title} value={data.value} />
+          <UserPostData
+            key={data.id}
+            title={data.title}
+            value={data.value}
+            onPress={data.onPress}
+          />
         ))}
       </View>
     </View>

@@ -92,12 +92,14 @@ export default function PostBottomSheet({ postId }) {
                 textColor='#b30000'
               />
             )}
-            <CustomButton
-              iconName='pencil-box'
-              label='Edit Post'
-              textColor='#000'
-              onPress={() => {}}
-            />
+            {deleteAccess && (
+              <CustomButton
+                iconName='pencil-box'
+                label='Edit Post'
+                textColor='#000'
+                onPress={() => {}}
+              />
+            )}
             <CustomButton
               iconName='share'
               label='Share Post on your account'

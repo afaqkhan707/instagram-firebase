@@ -42,7 +42,7 @@ export default function CommentBottomSheet({ createdBy, postData }) {
         ref={refRBSheet}
         height={screenHeight - (keyboardOpen ? 900 : 200)}
         closeOnDragDown={true}
-        closeOnPressMask={false}
+        closeOnPressMask={true}
         customStyles={{
           wrapper: {
             backgroundColor: 'rgba(0,0,0,0.8)',

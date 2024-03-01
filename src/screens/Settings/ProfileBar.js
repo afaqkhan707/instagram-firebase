@@ -3,7 +3,6 @@ import { StatusBar, View } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import ProfileBottomSheet from './BottomSheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const ProfileBar = () => {
   const loggedUser = useSelector((state) => state.auth?.currentUser);
@@ -50,9 +49,7 @@ const ProfileBar = () => {
           }}
         >
           <Appbar.Action icon='plus-box-outline' onPress={() => {}} />
-          {/* <GestureHandlerRootView>
-            <ProfileBottomSheet />
-          </GestureHandlerRootView> */}
+          {/* <ProfileBottomSheet /> */}
           <Appbar.Action icon='menu' onPress={() => {}} />
         </View>
       </Appbar.Header>

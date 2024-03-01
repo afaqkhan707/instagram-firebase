@@ -14,11 +14,12 @@ import {
 } from 'firebase/firestore';
 import { firestoreDb } from '../../firebase/firebaseConf';
 import { useSelector } from 'react-redux';
+import ProfileCard from '../../components/ProfileCard';
 const ProfileScreen = () => {
   const loggedUser = useSelector((state) => state.auth?.currentUser);
   const [userPosts, setUserPosts] = useState(null);
   const [myTotalPostLength, setMyTotalPostLength] = useState(0);
-
+  const [showUser, setShowUser] = React.useState(false);
   useEffect(() => {
     if (loggedUser && loggedUser?.userId) {
       const postsRef = query(
@@ -45,8 +46,9 @@ const ProfileScreen = () => {
       <Divider />
       <ProfileInfo myAllPosts={myTotalPostLength} />
       <Divider />
-      <EditProfile />
+      <EditProfile setShowUser={setShowUser} showUser={showUser} />
       <Divider />
+      {showUser && <ProfileCard size={60} height={160} width={140} />}
       <ProfileBottomBarNavigation authUserPost={userPosts} />
       <Divider />
     </View>

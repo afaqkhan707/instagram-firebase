@@ -95,28 +95,29 @@ const Tab = createBottomTabNavigator();
 const Dashboard = () => {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={({ route, focused }) => ({
+        tabBarLabelStyle: { color: focused ? '#ee2a7b' : 'gray' },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
+            color = focused ? '#ee2a7b' : 'gray';
           } else if (route.name === 'Search') {
             iconName = focused ? 'search' : 'search-outline';
+            color = focused ? '#ee2a7b' : 'gray';
           } else if (route.name === 'Add') {
             iconName = focused ? 'add' : 'add-outline';
+            color = focused ? '#ee2a7b' : 'gray';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
+            color = focused ? '#ee2a7b' : 'gray';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         headerShown: false,
       })}
-      tabBarOptions={{
-        activeTintColor: '#ee2a7b',
-        inactiveTintColor: 'gray',
-      }}
     >
       <Tab.Screen name='Home' component={HomeTab} />
       <Tab.Screen name='Search' component={SerachTab} />

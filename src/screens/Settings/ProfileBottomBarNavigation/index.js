@@ -61,13 +61,11 @@ const Tab = createMaterialTopTabNavigator();
 export default function ProfileBottomBarNavigation({ authUserPost }) {
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        activeTintColor: '#000',
-        inactiveTintColor: 'gray',
-        indicatorStyle: { backgroundColor: 'gray' },
-        style: { backgroundColor: '#fff' },
-        tabStyle: { paddingBottom: 5 },
-        showLabel: false,
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarIndicatorStyle: {
+          backgroundColor: 'transparent',
+        },
       }}
     >
       <Tab.Screen
@@ -89,7 +87,7 @@ export default function ProfileBottomBarNavigation({ authUserPost }) {
         options={{
           tabBarIcon: ({ focused }) => (
             <Entypo
-              name={focused ? 'video-camera' : 'folder-video'}
+              name={focused ? 'folder-video' : 'folder-video'}
               size={24}
               color={focused ? '#000' : 'grey'}
             />

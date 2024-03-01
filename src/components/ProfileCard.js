@@ -4,10 +4,10 @@ import { Avatar, Button, Card, IconButton, Text } from 'react-native-paper';
 
 const ProfileCard = (props) => {
   return (
-    <View style={{ width: 180 }}>
+    <View style={{ width: props.width }}>
       <Card
         style={{
-          height: 240,
+          height: props.height,
           borderRadius: 10,
           paddingVertical: 8,
           paddingHorizontal: 5,
@@ -33,7 +33,7 @@ const ProfileCard = (props) => {
             marginTop: 36,
           }}
         >
-          <Avatar.Image source={{ uri: props.image }} size={100} />
+          <Avatar.Image source={{ uri: props.image }} size={props.size} />
           <Text style={{ marginBottom: 0, marginTop: 10 }}>
             {props.profileName}
           </Text>

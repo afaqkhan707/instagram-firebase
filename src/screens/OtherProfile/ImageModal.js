@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Avatar } from 'react-native-paper';
 
-const ImageModal = ({ postAuthor }) => {
+const ImageModal = ({ userData }) => {
   const image =
     'https://images.unsplash.com/photo-1708852154434-d6436655b99d?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
   const [modalVisible, setModalVisible] = useState(false);
@@ -26,7 +26,7 @@ const ImageModal = ({ postAuthor }) => {
     <>
       <TouchableOpacity onPress={displayImage}>
         <View style={styles.avatarContainer}>
-          <Avatar.Image size={80} source={{ uri: postAuthor?.proImgLink }} />
+          <Avatar.Image size={80} source={{ uri: userData?.proImgLink }} />
         </View>
       </TouchableOpacity>
       <Modal
@@ -37,7 +37,7 @@ const ImageModal = ({ postAuthor }) => {
       >
         <TouchableOpacity style={styles.modalContainer} onPress={closeModal}>
           <ImageBackground
-            source={{ uri: postAuthor?.proImgLink }}
+            source={{ uri: userData?.proImgLink }}
             style={styles.modalBackdrop}
             resizeMode='cover'
             blurRadius={5}
@@ -49,7 +49,7 @@ const ImageModal = ({ postAuthor }) => {
               }}
             >
               <Image
-                source={{ uri: postAuthor?.proImgLink }}
+                source={{ uri: userData?.proImgLink }}
                 style={styles.modalImage}
                 resizeMode='contain'
               />

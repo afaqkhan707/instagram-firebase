@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 import {
   FlatList,
@@ -10,7 +11,7 @@ import { IconButton } from 'react-native-paper';
 
 const DisplayImages = ({ Images }) => {
   const [imageWidth, setImageWidth] = useState(null);
-
+  const navigation = useNavigation();
   useEffect(() => {
     const screenWidth = Dimensions.get('window').width;
     const numColumns = 3;
@@ -29,7 +30,13 @@ const DisplayImages = ({ Images }) => {
           marginTop: 3,
         }}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('UserPost', {
+                UserAllPosts: Images,
+              })
+            }
+          >
             <Image
               source={{ uri: item.postImage[0] }}
               style={{ width: imageWidth, height: imageWidth + 10 }}
@@ -37,8 +44,9 @@ const DisplayImages = ({ Images }) => {
             {item.postImage.length > 1 ? (
               <IconButton
                 icon='card-multiple'
-                style={{ position: 'absolute', top: -10, left: 74 }}
+                style={{ position: 'absolute', top: -10, left: 80 }}
                 iconColor='#fff'
+                size={20}
               />
             ) : null}
           </TouchableOpacity>

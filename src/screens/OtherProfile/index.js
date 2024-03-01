@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
@@ -14,28 +14,22 @@ import { Divider } from 'react-native-paper';
 const OtherProfileScreen = ({ route }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-
-  const [postAuthor, setPostAuthor] = React.useState(null);
-  const [postAuthorPosts, setPostAuthorPosts] = React.useState(null);
+  const [postAuthor, setPostAuthor] = useState(null);
+  const [postAuthorPosts, setPostAuthorPosts] = useState(null);
   const { userId } = route?.params;
-
+  const [myTotalPostLength, setMyTotalPostLength] = useState(0);
   const getPostAuthor = async () => {
     if (userId === undefined || userId === null) return;
-
     const userDocRef = doc(firestoreDb, 'users', userId);
     const userDocSnap = await getDoc(userDocRef);
-
     if (userDocSnap.exists()) {
       setPostAuthor(userDocSnap.data());
-      // console.log(userDocSnap.data()?.userId, 'userId');
     } else {
       console.log('No such user document found!');
     }
   };
-
   const allPostByUser = async () => {
     if (userId === undefined || userId === null) return;
-
     const q = query(
       collection(firestoreDb, 'posts'),
       where('userId', '==', userId)
@@ -46,8 +40,8 @@ const OtherProfileScreen = ({ route }) => {
       ...doc.data(),
     }));
     setPostAuthorPosts(userPosts);
+    setMyTotalPostLength(userPosts.length);
   };
-
   React.useEffect(() => {
     getPostAuthor();
     allPostByUser();
@@ -55,13 +49,13 @@ const OtherProfileScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <OtherProfileBar postAuthor={postAuthor} />
+      <OtherProfileBar userData={postAuthor} />
       <Divider />
-      <OtherProfileInfo postAuthor={postAuthor} />
+      <OtherProfileInfo userData={postAuthor} totalPost={myTotalPostLength} />
       <Divider />
-      <OtherProfileStatus postAuthor={postAuthor} />
+      <OtherProfileStatus userData={postAuthor} />
       <Divider />
-      <OtherProfileBottomBarNavigation />
+      <OtherProfileBottomBarNavigation postImages={postAuthorPosts} />
     </View>
   );
 };

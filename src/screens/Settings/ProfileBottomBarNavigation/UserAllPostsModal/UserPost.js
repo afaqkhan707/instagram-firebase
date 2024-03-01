@@ -1,23 +1,20 @@
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import PostHeader from './PostHeader';
+import { Image, StyleSheet, Text, View, Dimensions } from 'react-native';
+import React from 'react';
 import { Divider, IconButton } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-// import { useSelector } from 'react-redux';
-// import { Video,  } from 'expo-av';
 import Carousel from 'react-native-reanimated-carousel';
-import { nanoid } from '@reduxjs/toolkit';
-import { doc, getDoc } from 'firebase/firestore';
-import { firestoreDb } from '../../firebase/firebaseConf';
-import CommentBottomSheet from '../../components/CommentBottomSheet';
+import UserPostHeader from './UserPostHeader';
+import { useSelector } from 'react-redux';
+import CommentBottomSheet from '../../../../components/CommentBottomSheet';
 
-const Post = ({ postData }) => {
+const UserPost = ({ postData }) => {
   const { width: screenWidth } = Dimensions.get('window');
   const [isPostLiked, setIsPostLiked] = React.useState(false);
   const [isCommented, setIsCommented] = React.useState(false);
   const [isPostSaved, setIsPostSaved] = React.useState(false);
   const [isPostShared, setIsPostShared] = React.useState(false);
+  const loggedUser = useSelector((state) => state.auth?.currentUser);
   const handleLike = () => {
     setIsPostLiked(!isPostLiked);
   };
@@ -31,33 +28,19 @@ const Post = ({ postData }) => {
     setIsPostShared(!isPostShared);
   };
 
-  const [creatorInfo, setCreatorInfo] = useState(null);
-
-  const getPostUser = async () => {
-    try {
-      userRef = doc(firestoreDb, 'users', postData.userId);
-      user = await getDoc(userRef);
-      await setCreatorInfo(user.data());
-    } catch (error) {
-      console.log(error, 'postUser');
-    }
-  };
-  useEffect(() => {
-    getPostUser();
-  }, []);
   return (
     <>
       {/* Post Content */}
       <Divider />
       <View style={styles.postContainer}>
-        <PostHeader PostBy={creatorInfo} postData={postData} />
+        <UserPostHeader PostBy={postData} />
         {postData.postImage && postData.postImage.length > 0 && (
           <Carousel
-            loop={false}
-            style={styles.postImageContainer}
+            style={[styles.postImageContainer, { width: screenWidth }]}
             data={postData?.postImage}
             width={screenWidth}
             scrollAnimationDuration={500}
+            loop={false}
             renderItem={({ item, index }) => (
               <>
                 <Image source={{ uri: item }} style={styles.postImage} />
@@ -89,7 +72,7 @@ const Post = ({ postData }) => {
               style={{ margin: 0, marginLeft: -10 }}
             />
 
-            <CommentBottomSheet createdBy={creatorInfo} postData={postData} />
+            <CommentBottomSheet createdBy={loggedUser} postData={postData} />
 
             <IconButton
               icon={() => <Feather name='send' size={24} />}
@@ -126,7 +109,7 @@ const Post = ({ postData }) => {
             gap: 10,
           }}
         >
-          <Text style={{ fontWeight: 700 }}>{creatorInfo?.username}</Text>
+          <Text style={{ fontWeight: 700 }}>{loggedUser?.username}</Text>
           <Text style={{ color: '#262626' }}>{postData?.description}</Text>
         </View>
         <View>
@@ -139,12 +122,11 @@ const Post = ({ postData }) => {
   );
 };
 
-export default Post;
+export default UserPost;
 
 const styles = StyleSheet.create({
   postContainer: {
     backgroundColor: '#fff',
-    // height: 'auto',
     flex: 1,
   },
   postImageContainer: {

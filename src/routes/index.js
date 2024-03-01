@@ -14,6 +14,8 @@ import LoaderPage from '../components/Loader';
 import { setIsLoading } from '../redux/slices/authSlice';
 import CameraGalleryModal from '../screens/CameraGalleryModal/CameraGalleryModal';
 import OtherProfileScreen from '../screens/OtherProfile';
+import UserPostModal from '../screens/Settings/ProfileBottomBarNavigation/UserAllPostsModal';
+import UserFollow from '../screens/Follow';
 // import { CheckActiveUser } from '../redux/services/firebaseActions';
 
 const Stack = createNativeStackNavigator();
@@ -115,6 +117,16 @@ const MyStack = () => {
           <Stack.Screen
             name='otherprofile'
             component={OtherProfileScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='UserPost'
+            component={UserPostModal}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='UserFollow'
+            component={UserFollow}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
