@@ -2,8 +2,8 @@ import * as React from 'react';
 import Svg, { Path } from 'react-native-svg';
 const InstaSvg = (props) => (
   <Svg
-    width={200}
-    height={36}
+    width={props.width}
+    height={props.height}
     viewBox='0 0 182 49'
     fill='none'
     xmlns='http://www.w3.org/2000/svg'

@@ -1,6 +1,6 @@
 import { StyleSheet, Text } from 'react-native';
 import React from 'react';
-import { Appbar } from 'react-native-paper';
+import { Appbar, Divider } from 'react-native-paper';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
 import FollowersTab from './components/followers';
@@ -15,13 +15,18 @@ const UserFollow = ({ route }) => {
   const _goBack = () => navigation.goBack();
   return (
     <>
-      <Appbar.Header>
+      <Appbar.Header style={{ backgroundColor: '#fff' }}>
         <Appbar.BackAction onPress={_goBack} />
         <Appbar.Content
-          title={user?.username}
-          titleStyle={{ fontWeight: 900, fontSize: 17 }}
+          title={ProfileUser?.username}
+          titleStyle={{
+            color: '#000000',
+            fontWeight: 'bold',
+            marginRight: -50,
+          }}
         />
       </Appbar.Header>
+      <Divider />
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarLabel: ({ focused, color }) => {

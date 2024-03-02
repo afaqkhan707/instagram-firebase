@@ -55,7 +55,10 @@ const OtherProfileScreen = ({ route }) => {
       <Divider />
       <OtherProfileStatus userData={postAuthor} />
       <Divider />
-      <OtherProfileBottomBarNavigation postImages={postAuthorPosts} />
+      <OtherProfileBottomBarNavigation
+        postImages={postAuthorPosts}
+        userData={postAuthor}
+      />
     </View>
   );
 };

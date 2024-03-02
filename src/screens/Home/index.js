@@ -65,7 +65,7 @@ const HomeTab = () => {
         {/* <UserProfileCards /> */}
         {posts &&
           posts.map((item) => {
-            return <Post key={item.id} postData={item} />;
+            return <Post key={item.postId} postData={item} />;
           })}
       </ScrollView>
     </>

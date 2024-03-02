@@ -7,6 +7,7 @@ import {
   FlatList,
   SafeAreaView,
   Text,
+  Pressable,
 } from 'react-native';
 import { Avatar, Divider, IconButton } from 'react-native-paper';
 import { firestoreDb } from '../firebase/firebaseConf';
@@ -20,13 +21,12 @@ const CommentSection = ({ postData, creatorInfoData }) => {
   const [sendingComment, setSendingComment] = useState(false);
 
   const activeUser = useSelector((state) => state.auth?.currentUser);
-  console.log(activeUser, 'dara');
   const dispatch = useDispatch();
   const handleSubmitComment = async (postData, commentContent) => {
     if (commentContent.trim() === '') return;
     setSendingComment(true);
     try {
-      const updateDocRef = doc(firestoreDb, 'posts', postData.id);
+      const updateDocRef = doc(firestoreDb, 'posts', postData?.postId);
       const newComment = {
         commentId: nanoid(),
         commentValue: commentContent,
@@ -40,7 +40,9 @@ const CommentSection = ({ postData, creatorInfoData }) => {
         await updateDoc(updateDocRef, {
           comments: arrayUnion(newComment),
         });
-        dispatch(setCommentState({ id: postData.id, comment: newComment }));
+        dispatch(
+          setCommentState({ id: postData?.postId, comment: newComment })
+        );
         setCommentContent('');
         setSendingComment(false);
       }
@@ -50,7 +52,13 @@ const CommentSection = ({ postData, creatorInfoData }) => {
       setSendingComment(false);
     }
   };
+  const [isCommentSelected, setIsCommentSelected] = useState(false);
+  const [selectedCommentIndex, setSelectedCommentIndex] = useState(-1);
 
+  const selectedComment = (index) => {
+    setIsCommentSelected(true);
+    setSelectedCommentIndex(index);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -59,18 +67,23 @@ const CommentSection = ({ postData, creatorInfoData }) => {
       <Divider />
       <FlatList
         data={postData.comments}
-        showsVerticalScrollIndicator
-        renderItem={({ item }) => (
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item, index }) => (
           <>
-            <View
+            <Pressable
               style={{
                 minHeight: 70,
-                backgroundColor: '#fff',
+                backgroundColor:
+                  isCommentSelected && selectedCommentIndex === index
+                    ? '#E0F2FF'
+                    : '#fff',
                 justifyContent: 'space-between',
                 flexDirection: 'row',
                 paddingHorizontal: 14,
                 alignItems: 'center',
               }}
+              onLongPress={() => selectedComment(index)}
+              onPress={() => setIsCommentSelected(false)}
             >
               <Avatar.Image
                 size={40}
@@ -96,7 +109,7 @@ const CommentSection = ({ postData, creatorInfoData }) => {
                 }}
                 iconColor={isCommentLiked ? '#FD1D1D' : '#a3a3a3a3'}
               />
-            </View>
+            </Pressable>
             <Divider />
           </>
         )}
@@ -116,7 +129,7 @@ const CommentSection = ({ postData, creatorInfoData }) => {
           value={commentContent}
           onChangeText={setCommentContent}
           placeholderTextColor={'#aaa'}
-          placeholder='Add a  comment...'
+          placeholder='Add a comment...'
           // onSubmitEditing={handleSubmitComment}
         />
         <IconButton icon='file-gif-box' onPress={() => {}} />

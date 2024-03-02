@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 import AppBarBackIcon from '../../components/BackBtnIcon';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
-import { Button, HelperText } from 'react-native-paper';
+import { Button, Divider, HelperText } from 'react-native-paper';
 import { loginSchema } from '../../schemas/formikSchemas';
 import CustomTextInput from '../../components/CustomTextInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,6 +22,7 @@ import { setCurrentUser } from '../../redux/slices/authSlice';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, firestoreDb } from '../../firebase/firebaseConf.js';
 import { collection, doc, getDoc } from 'firebase/firestore';
+import InstaSvg from '../../components/Svgs/LogoInsta.js';
 const Login = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -42,14 +43,12 @@ const Login = () => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ flex: 1, backgroundColor: '#fff' }}>
       <AppBarBackIcon onPress={navigateToSignup} />
       <View style={styles.container}>
-        {/* <Icon source='instagram' size={40} /> */}
-        <Image
-          source={require('../../../assets/Instagram_icon.png')}
-          style={styles.logo}
-        />
+        <View style={{ marginBottom: 50 }}>
+          <InstaSvg width={200} height={50} />
+        </View>
         <Formik
           initialValues={{ email: '', password: '' }}
           validationSchema={loginSchema}
@@ -135,14 +134,6 @@ const Login = () => {
                   <Text style={styles.link}>Create One</Text>
                 </TouchableOpacity>
               </View>
-              {/* <Button
-                mode='outlined'
-                loading={loading}
-                style={[styles.button, styles.newAcc]}
-                textColor='#3797EF'
-              >
-                Create new account
-              </Button> */}
             </>
           )}
         </Formik>
@@ -159,7 +150,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 30,
+    // justifyContent: 'space-evenly',
+    // justifyContent: 'center',
   },
   heading: {
     fontSize: 30,
@@ -183,7 +176,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderBottomWidth: 1,
     borderColor: '#0000001a',
-    marginHorizontal: 20,
+    marginHorizontal: 10,
   },
   forgotContainer: {
     width: '100%',
@@ -210,3 +203,14 @@ const styles = StyleSheet.create({
   },
   logo: { marginBottom: 60, width: 60, height: 60, marginTop: 20 },
 });
+
+{
+  /* <Button
+                mode='outlined'
+                loading={loading}
+                style={[styles.button, styles.newAcc]}
+                textColor='#3797EF'
+              >
+                Create new account
+              </Button> */
+}

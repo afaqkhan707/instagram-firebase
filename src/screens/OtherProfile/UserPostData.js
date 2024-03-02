@@ -13,6 +13,7 @@ const UserPostData = (props) => {
         minWidth: 50,
       }}
       android_ripple={{ color: '#d3d3d3' }}
+      onPress={props.onPress}
     >
       <Text style={{ fontWeight: 900, fontSize: 16 }}>{props.value}</Text>
       <Text>{props.title}</Text>

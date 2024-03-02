@@ -200,7 +200,7 @@ export const getPosts = () => async (dispatch) => {
     const querySnapshot = await getDocs(usersRef);
     const posts = [];
     querySnapshot.forEach((doc) => {
-      posts.push({ ...doc.data(), id: doc.id });
+      posts.push({ ...doc.data(), postId: doc.id });
     });
     dispatch(setPost(posts));
   } catch (error) {

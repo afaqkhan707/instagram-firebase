@@ -47,7 +47,6 @@ const CameraModal = ({
         userId,
         address: location,
         description: description,
-        postId: nanoid(),
       };
       await addDoc(collection(firestoreDb, 'posts'), data);
       setModalVisible(false);

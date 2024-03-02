@@ -22,8 +22,8 @@ const postSlice = createSlice({
     },
     setCommentState: (state, action) => {
       state.posts = state.posts.map((post) => {
-        if (post.id === action.payload.id) {
-          post.comments.push(action.payload.comment);
+        if (post.postId === action.payload.id) {
+          state.posts.comments.push(action.payload.comment);
         }
         return post;
       });

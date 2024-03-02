@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
-const OtherDisplayImages = ({ Images }) => {
+const OtherDisplayImages = ({ Images, User }) => {
   const [imageWidth, setImageWidth] = useState(null);
   const navigation = useNavigation();
   useEffect(() => {
@@ -32,8 +32,9 @@ const OtherDisplayImages = ({ Images }) => {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('UserPost', {
+              navigation.navigate('UserPosts', {
                 UserAllPosts: Images,
+                PostsOwner: User,
               })
             }
           >

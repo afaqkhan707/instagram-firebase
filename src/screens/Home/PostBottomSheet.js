@@ -14,9 +14,18 @@ const CustomButton = ({ iconName, label, onPress, textColor }) => (
   <>
     <Button
       icon={iconName}
+      iconSize={30}
       mode='contained-tonal'
+      labelStyle={{
+        fontSize: 18,
+        paddingVertical: 5,
+        borderRadius: 4,
+        paddingHorizontal: 10,
+      }}
       style={{
-        borderRadius: 8,
+        width: '100%',
+        alignItems: 'flex-start',
+        borderRadius: 4,
       }}
       buttonColor='#fff'
       textColor={textColor}
@@ -44,6 +53,7 @@ export default function PostBottomSheet({ postId }) {
     }
   };
   const deleteAccess = loggedUser?.userId === postId?.userId;
+  const sharePost = loggedUser?.userId !== postId?.userId;
   return (
     <>
       <IconButton
@@ -77,19 +87,16 @@ export default function PostBottomSheet({ postId }) {
         >
           <View
             style={{
-              paddingVertical: 1,
-              gap: 1,
-              alignItems: 'center',
               backgroundColor: 'purple',
               backgroundColor: '#FFF',
             }}
           >
-            {deleteAccess && (
+            {sharePost && (
               <CustomButton
-                iconName='delete'
-                label='Delete Post'
-                onPress={deletePost}
-                textColor='#b30000'
+                iconName='share'
+                label='Share Post on your account'
+                textColor='#000'
+                onPress={() => {}}
               />
             )}
             {deleteAccess && (
@@ -100,12 +107,14 @@ export default function PostBottomSheet({ postId }) {
                 onPress={() => {}}
               />
             )}
-            <CustomButton
-              iconName='share'
-              label='Share Post on your account'
-              textColor='#000'
-              onPress={() => {}}
-            />
+            {deleteAccess && (
+              <CustomButton
+                iconName='delete'
+                label='Delete Post'
+                onPress={deletePost}
+                textColor='#b30000'
+              />
+            )}
           </View>
         </RBSheet>
       </TouchableOpacity>

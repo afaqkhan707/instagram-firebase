@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { IconButton } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 
 const DisplayImages = ({ Images }) => {
   const [imageWidth, setImageWidth] = useState(null);
@@ -19,7 +20,7 @@ const DisplayImages = ({ Images }) => {
     const width = (screenWidth - (numColumns - 1) * spacing) / numColumns;
     setImageWidth(width);
   }, []);
-
+  const User = useSelector((state) => state.auth?.currentUser);
   return (
     <View>
       <FlatList
@@ -32,8 +33,9 @@ const DisplayImages = ({ Images }) => {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('UserPost', {
+              navigation.navigate('UserPosts', {
                 UserAllPosts: Images,
+                PostsOwner: User,
               })
             }
           >

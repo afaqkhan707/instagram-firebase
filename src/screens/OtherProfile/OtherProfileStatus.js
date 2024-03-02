@@ -1,5 +1,5 @@
 import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -8,6 +8,7 @@ import { firestoreDb } from '../../firebase/firebaseConf';
 const OtherProfileStatus = ({ userData }) => {
   const loggedUser = useSelector((state) => state.auth?.currentUser);
   const [isFollowing, setIsFollowing] = React.useState(false);
+  const [showCards, setShowCards] = useState(false);
   const handleFollowing = async () => {
     try {
       const userDocRef = doc(firestoreDb, 'users', loggedUser?.userId);
@@ -60,6 +61,7 @@ const OtherProfileStatus = ({ userData }) => {
         labelStyle={{
           paddingHorizontal: 10,
           marginVertical: 7,
+          width: 82,
         }}
       >
         {isFollowing ? 'Following' : 'Follow'}
@@ -74,14 +76,15 @@ const OtherProfileStatus = ({ userData }) => {
         labelStyle={{
           paddingHorizontal: 10,
           marginVertical: 7,
+          width: 82,
         }}
       >
         Message
       </Button>
       <IconButton
-        icon={'account-plus'}
+        icon={showCards ? 'account-plus' : 'account-plus-outline'}
         containerColor='#f3f3f3'
-        onPress={() => {}}
+        onPress={() => setShowCards(!showCards)}
         style={styles.editButton}
         size={18}
       />

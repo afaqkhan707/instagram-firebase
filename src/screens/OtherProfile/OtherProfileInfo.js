@@ -2,12 +2,29 @@ import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import UserPostData from './UserPostData';
 import ImageModal from './ImageModal';
+import { useNavigation } from '@react-navigation/native';
 
 const OtherProfileInfo = ({ userData, totalPost }) => {
+  const navigation = useNavigation();
+  const openDeviceMedia = () => {
+    navigation.navigate('UserFollow', {
+      ProfileUser: userData,
+    });
+  };
   const userPostData = [
     { id: 1, title: 'posts', value: totalPost },
-    { id: 2, title: 'followers', value: userData?.followers?.length },
-    { id: 3, title: 'following', value: userData?.following?.length },
+    {
+      id: 2,
+      title: 'followers',
+      value: userData?.followers?.length,
+      onPress: openDeviceMedia,
+    },
+    {
+      id: 3,
+      title: 'following',
+      value: userData?.following?.length,
+      onPress: openDeviceMedia,
+    },
   ];
 
   return (
@@ -41,7 +58,12 @@ const OtherProfileInfo = ({ userData, totalPost }) => {
           }}
         >
           {userPostData.map((data) => (
-            <UserPostData key={data.id} title={data.title} value={data.value} />
+            <UserPostData
+              key={data.id}
+              title={data.title}
+              value={data.value}
+              onPress={data.onPress}
+            />
           ))}
         </View>
       </View>

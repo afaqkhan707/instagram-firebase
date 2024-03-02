@@ -20,6 +20,7 @@ import { signupSchema } from '../../schemas/formikSchemas';
 import CustomTextInput from '../../components/CustomTextInput';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../../firebase/firebaseConf';
+import InstaSvg from '../../components/Svgs/LogoInsta';
 
 const Signup = () => {
   const googleProvider = new GoogleAuthProvider();
@@ -45,126 +46,136 @@ const Signup = () => {
     // dispatch(continueWithGoogle(navigation, setLoadingGoogle));
   };
   return (
-    <ScrollView>
+    <>
       <AppBarBackIcon onPress={navigateToLogin} />
-      <View style={styles.container}>
-        <Icon source='instagram' size={40} />
-        <Image
-          source={require('../../../assets/Instagram Logo.png')}
-          style={styles.logo}
-        />
-        <Formik
-          initialValues={{
-            username: '',
-            email: '',
-            password: '',
-            confirm_password: '',
-          }}
-          validationSchema={signupSchema}
-          onSubmit={(values, action) => {
-            const resetSignupForm = () => {
-              return action.resetForm();
-            };
-            setLoadingLogin(true);
-            console.log('values in Signup', values);
-            dispatch(
-              registerUser(values, navigation, setLoadingLogin, resetSignupForm)
-            );
-          }}
-        >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
-            <>
-              <CustomTextInput
-                label='Username,'
-                name='username'
-                value={values.username}
-                onChangeText={handleChange('username')}
-                onBlur={handleBlur('username')}
-              />
-              {touched.username && errors.username && (
-                <HelperText type='error'>{errors.username}</HelperText>
-              )}
-              <CustomTextInput
-                label='Username, email or mobile number'
-                name='email'
-                value={values.email}
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-              />
-              {touched.email && errors.email && (
-                <HelperText type='error'>{errors.email}</HelperText>
-              )}
-              <CustomTextInput
-                label='Password'
-                value={values.password}
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                secureTextEntry={!visiblePassword}
-                rightIcon={visiblePassword ? 'eye-outline' : 'eye-off-outline'}
-                onRightIconPress={handleShowPassword}
-                // color={visiblePassword ? '#3797EF' : '#ee2a7b'}
-              />
-              {touched.password && errors.password && (
-                <HelperText type='error'>{errors.password}</HelperText>
-              )}
-              <CustomTextInput
-                label='Confirm Password'
-                value={values.confirm_password}
-                onChangeText={handleChange('confirm_password')}
-                onBlur={handleBlur('confirm_password')}
-                secureTextEntry={!visiblePassword}
-                rightIcon={visiblePassword ? 'eye-outline' : 'eye-off-outline'}
-                onRightIconPress={handleShowPassword}
-                // color={visiblePassword ? '#3797EF' : '#ee2a7b'}
-              />
-              {touched.confirm_password && errors.confirm_password && (
-                <HelperText type='error'>{errors.confirm_password}</HelperText>
-              )}
-
-              <Button
-                mode='contained'
-                loading={loadingLogin}
-                onPress={() => handleSubmit(values)}
-                style={styles.button}
-                buttonColor='#3797EF'
-              >
-                Signup
-              </Button>
-            </>
-          )}
-        </Formik>
-        <View style={styles.main}>
-          <View style={styles.hr}></View>
-          <Text style={styles.text}>or</Text>
-          <View style={styles.hr}></View>
-        </View>
-        <View style={styles.view}>
-          <Button
-            mode='outlined'
-            loading={loadingGoogle}
-            style={styles.button}
-            textColor='#fff'
-            buttonColor='#ee2a7b'
-            icon='google'
-            onPress={continueWithGoogleAccount}
+      <ScrollView contentContainerStyle={{ flex: 1, backgroundColor: '#fff' }}>
+        <View style={styles.container}>
+          <View style={{ marginBottom: 20 }}>
+            <InstaSvg width={200} height={50} />
+          </View>
+          <Formik
+            initialValues={{
+              username: '',
+              email: '',
+              password: '',
+              confirm_password: '',
+            }}
+            validationSchema={signupSchema}
+            onSubmit={(values, action) => {
+              const resetSignupForm = () => {
+                return action.resetForm();
+              };
+              setLoadingLogin(true);
+              console.log('values in Signup', values);
+              dispatch(
+                registerUser(
+                  values,
+                  navigation,
+                  setLoadingLogin,
+                  resetSignupForm
+                )
+              );
+            }}
           >
-            Continue Google
-          </Button>
-        </View>
-        <View style={styles.view}>
-          <Text>Already have an account?</Text>
-          <TouchableOpacity onPress={navigateToLogin}>
-            <Text style={styles.link}>Login</Text>
-          </TouchableOpacity>
-        </View>
-        {/* <Button
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+            }) => (
+              <>
+                <CustomTextInput
+                  label='Username,'
+                  name='username'
+                  value={values.username}
+                  onChangeText={handleChange('username')}
+                  onBlur={handleBlur('username')}
+                />
+                {touched.username && errors.username && (
+                  <HelperText type='error'>{errors.username}</HelperText>
+                )}
+                <CustomTextInput
+                  label='Username, email or mobile number'
+                  name='email'
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  onBlur={handleBlur('email')}
+                />
+                {touched.email && errors.email && (
+                  <HelperText type='error'>{errors.email}</HelperText>
+                )}
+                <CustomTextInput
+                  label='Password'
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                  secureTextEntry={!visiblePassword}
+                  rightIcon={
+                    visiblePassword ? 'eye-outline' : 'eye-off-outline'
+                  }
+                  onRightIconPress={handleShowPassword}
+                  // color={visiblePassword ? '#3797EF' : '#ee2a7b'}
+                />
+                {touched.password && errors.password && (
+                  <HelperText type='error'>{errors.password}</HelperText>
+                )}
+                <CustomTextInput
+                  label='Confirm Password'
+                  value={values.confirm_password}
+                  onChangeText={handleChange('confirm_password')}
+                  onBlur={handleBlur('confirm_password')}
+                  secureTextEntry={!visiblePassword}
+                  rightIcon={
+                    visiblePassword ? 'eye-outline' : 'eye-off-outline'
+                  }
+                  onRightIconPress={handleShowPassword}
+                  // color={visiblePassword ? '#3797EF' : '#ee2a7b'}
+                />
+                {touched.confirm_password && errors.confirm_password && (
+                  <HelperText type='error'>
+                    {errors.confirm_password}
+                  </HelperText>
+                )}
+
+                <Button
+                  mode='contained'
+                  loading={loadingLogin}
+                  onPress={() => handleSubmit(values)}
+                  style={styles.button}
+                  buttonColor='#3797EF'
+                >
+                  Signup
+                </Button>
+              </>
+            )}
+          </Formik>
+          <View style={styles.main}>
+            <View style={styles.hr}></View>
+            <Text style={styles.text}>or</Text>
+            <View style={styles.hr}></View>
+          </View>
+          <View style={styles.view}>
+            <Button
+              mode='outlined'
+              loading={loadingGoogle}
+              style={styles.button}
+              textColor='#fff'
+              buttonColor='#ee2a7b'
+              icon='google'
+              onPress={continueWithGoogleAccount}
+            >
+              Continue Google
+            </Button>
+          </View>
+          <View style={styles.view}>
+            <Text>Already have an account?</Text>
+            <TouchableOpacity onPress={navigateToLogin}>
+              <Text style={styles.link}>Login</Text>
+            </TouchableOpacity>
+          </View>
+          {/* <Button
           mode='outlined'
           loading={loading}
           style={[styles.button, styles.newAcc]}
@@ -172,8 +183,9 @@ const Signup = () => {
         >
           Create new account
         </Button> */}
-      </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+    </>
   );
 };
 
@@ -185,7 +197,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 30,
+    // justifyContent: 'center',
   },
 
   heading: {
