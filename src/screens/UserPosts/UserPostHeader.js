@@ -1,19 +1,11 @@
-import { deleteDoc, doc } from 'firebase/firestore';
 import * as React from 'react';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-paper';
-// import { firestoreDb } from '../../firebase/firebaseConf';
 import { Divider } from 'react-native-paper';
-// import PostBottomSheet from './PostBottomSheet';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
 import PostBottomSheet from '../Home/PostBottomSheet';
 
 const UserPostHeader = ({ PostBy, postLocation }) => {
-  const deletePost = async () => {
-    await deleteDoc(doc(firestoreDb, 'posts', postId));
-    console.log('deleted');
-  };
   const navigation = useNavigation();
   const [visible, setVisible] = React.useState(false);
   const openMenu = () => setVisible(true);

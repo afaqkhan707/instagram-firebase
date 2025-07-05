@@ -86,9 +86,7 @@ const MyStack = () => {
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName={isLogged ? 'dashboard' : 'dashboard'}
-        >
+        <Stack.Navigator initialRouteName={isLogged ? 'login' : 'dashboard'}>
           <Stack.Screen
             name='login'
             component={Login}

@@ -52,13 +52,18 @@ const UserFollow = ({ route }) => {
           {() => (
             <FollowersTab
               followers={ProfileUser?.followers}
-              followerId={ProfileUser?.userId}
+              // followerId={ProfileUser?.userId}
             />
           )}
         </Tab.Screen>
 
         <Tab.Screen name='following'>
-          {() => <FollowingTab following={ProfileUser?.following} />}
+          {() => (
+            <FollowingTab
+              following={ProfileUser?.following}
+              // followingId={ProfileUser?.userId}
+            />
+          )}
         </Tab.Screen>
 
         <Tab.Screen name='subscriber'>{() => <SubscriptionTab />}</Tab.Screen>

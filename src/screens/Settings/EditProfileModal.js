@@ -33,6 +33,7 @@ const EditProfileModal = () => {
           paddingHorizontal: 10,
           marginVertical: 7,
         }}
+        icon={'account-edit-outline'}
       >
         Edit profile
       </Button>

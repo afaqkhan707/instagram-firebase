@@ -1,6 +1,5 @@
-import { doc, deleteDoc } from 'firebase/firestore';
-
 import React, { useRef } from 'react';
+import { doc, deleteDoc } from 'firebase/firestore';
 import { View, Dimensions, TouchableOpacity } from 'react-native';
 import { Button, Divider, IconButton } from 'react-native-paper';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -23,7 +22,6 @@ const CustomButton = ({ iconName, label, onPress, textColor }) => (
         paddingHorizontal: 10,
       }}
       style={{
-        width: '100%',
         alignItems: 'flex-start',
         borderRadius: 4,
       }}
@@ -70,6 +68,7 @@ export default function PostBottomSheet({ postId }) {
           ref={refRBSheet}
           closeOnDragDown={true}
           closeOnPressMask={true}
+          height={screenHeight - 300}
           customStyles={{
             wrapper: {
               backgroundColor: 'rgba(0,0,0,0.7)',

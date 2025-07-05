@@ -69,9 +69,7 @@ const UserPost = ({ postData, postBy }) => {
               onPress={handleLike}
               style={{ margin: 0, marginLeft: -10 }}
             />
-
             <CommentBottomSheet createdBy={postBy} postData={postData} />
-
             <IconButton
               icon={() => <Feather name='send' size={24} />}
               iconColor={isPostShared ? '#0000001a' : '#262626'}

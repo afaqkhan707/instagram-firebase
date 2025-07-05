@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, RefreshControl } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import HomeAppBar from '../../components/HomeAppBar';
 import StatusBarUsers from './StatusBar';
 import Post from './Post';
@@ -57,6 +58,8 @@ const HomeTab = () => {
           />
         }
       >
+        <StatusBar backgroundColor='#fff' translucent={false} />
+
         <HomeAppBar
           setContentData={setContent}
           setModalVisible={setModalVisible}

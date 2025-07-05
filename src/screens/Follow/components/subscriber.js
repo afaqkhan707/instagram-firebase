@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 const SubscriptionTab = () => {
   return (
     <View style={{ flex: 1, backgroundColor: '#dddddd' }}>
-      <Text>HELLO</Text>
+      {/* <Text>HELLO</Text> */}
     </View>
   );
 };

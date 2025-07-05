@@ -15,7 +15,6 @@ const PostHeader = ({ PostBy, postData }) => {
   };
   const navigation = useNavigation();
   const handelUserInfo = () => {
-    console.log(PostBy?.userId, 'PostBy?.userId');
     navigation.navigate('otherprofile', {
       userId: PostBy?.userId,
     });
